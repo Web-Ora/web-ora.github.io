@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="it" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebOra . Il sito della tua attività da 70€, online in 1 o 5 giorni</title>
+<meta name="description" content="Siamo un team di sviluppatori. Costruiamo siti veri, veloci e fatti bene per negozi, ristoranti, palestre e centri estetici da 70€ una tantum. Anteprima gratuita, paghi solo se ti piace.">
+<meta name="theme-color" content="#08080b">
+<meta property="og:title" content="WebOra . Il sito della tua attività. Da 70€ a 250€. Non 1.500€.">
+<meta property="og:description" content="Anteprima reale gratuita. Online in 1 o 5 giorni. Lo aggiorni da solo in 2 clic.">
+<meta property="og:type" content="website">
+
+<script src="config.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ink:  { 950:'#08080b', 900:'#0c0c11', 850:'#111118', 800:'#17171f', 700:'#22222c' },
+          acid: { 300:'#6ee7b7', 400:'#34d399', 500:'#10b981', 600:'#059669' },
+          volt: { 300:'#93c5fd', 400:'#60a5fa', 500:'#3b82f6' },
+          iris: { 400:'#a78bfa', 500:'#8b5cf6' },
+          flare:{ 400:'#fb7185', 500:'#f43f5e', 600:'#e11d48' },
+          gold: { 400:'#fbbf24' },
+        },
+        fontFamily: {
+          sans: ['Inter','ui-sans-serif','system-ui','-apple-system','Segoe UI','Roboto','sans-serif'],
+        },
+        animation: {
+          'float':      'float 6s ease-in-out infinite',
+          'float-slow': 'float 9s ease-in-out infinite',
+          'halo':       'halo 3.2s ease-in-out infinite',
+          'sweep':      'sweep 6s ease-in-out infinite',
+          'drift':      'drift 18s ease-in-out infinite alternate',
+          'blink':      'blink 1s steps(2) infinite',
+        },
+        keyframes: {
+          float: { '0%,100%':{ transform:'translateY(0)' }, '50%':{ transform:'translateY(-14px)' } },
+          halo:  { '0%,100%':{ opacity:'1', boxShadow:'0 0 0 0 rgba(52,211,153,.45)' },
+                   '50%':{ opacity:'.85', boxShadow:'0 0 0 9px rgba(52,211,153,0)' } },
+          sweep: { '0%':{ left:'-60%' }, '55%':{ left:'130%' }, '100%':{ left:'130%' } },
+          drift: { '0%':{ transform:'translate3d(0,0,0) scale(1)' }, '100%':{ transform:'translate3d(40px,30px,0) scale(1.12)' } },
+          blink: { '50%':{ opacity:'0' } },
+        },
+      },
+    },
+  }
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+  ::selection { background:#34d399; color:#06060a; }
+  body { -webkit-font-smoothing:antialiased; letter-spacing:-.011em; }
+  h1,h2,h3 { letter-spacing:-.035em; }
+
+  /* grana leggera sopra allo sfondo */
+  .noise::before{
+    content:''; position:absolute; inset:0; pointer-events:none; opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* bagliori e bordi luminosi */
+  .glow-acid  { box-shadow:0 0 0 1px rgba(52,211,153,.18), 0 24px 70px -28px rgba(16,185,129,.55); }
+  .glow-soft  { box-shadow:0 20px 60px -30px rgba(0,0,0,.9); }
+  .glow-flare { box-shadow:0 0 0 1px rgba(244,63,94,.16), 0 20px 60px -30px rgba(244,63,94,.35); }
+  .ring-lit   { box-shadow:inset 0 1px 0 rgba(255,255,255,.09); }
+
+  .beam{ position:absolute; top:0; left:14%; right:14%; height:1px;
+         background:linear-gradient(90deg,transparent,rgba(52,211,153,.8),transparent); }
+  .beam-flare{ background:linear-gradient(90deg,transparent,rgba(244,63,94,.7),transparent); }
+
+  .card-hover{ transition:transform .38s cubic-bezier(.2,.8,.2,1), border-color .38s, box-shadow .38s, background .38s; }
+  .card-hover:hover{ transform:translateY(-5px); border-color:rgba(52,211,153,.35);
+                     box-shadow:0 28px 70px -30px rgba(16,185,129,.45); }
+
+  /* riflesso che attraversa i mockup */
+  .shine{ position:absolute; top:0; width:45%; height:100%; transform:skewX(-18deg); pointer-events:none;
+          background:linear-gradient(90deg,transparent,rgba(255,255,255,.16),transparent); }
+
+  /* ===== vetrina, elenco a sinistra e anteprima a destra ===== */
+  .vet{ display:grid; gap:18px; }
+  .vet-schermo{ order:0 }   /* da telefono l'anteprima sta sopra */
+  .vet-lista{ order:1 }
+  @media (min-width:1024px){
+    .vet{ grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr); gap:24px; align-items:start; }
+    .vet-lista{ order:0 } .vet-schermo{ order:1 }
+  }
+
+  .vet-lista{ display:flex; flex-direction:column; gap:6px; max-height:452px; overflow-y:auto; padding-right:6px; }
+  .vet-lista::-webkit-scrollbar{ width:4px }
+  .vet-lista::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.12); border-radius:99px }
+
+  .ex-row{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; padding:9px 12px;
+           border-radius:14px; border:1px solid transparent; background:rgba(255,255,255,.022);
+           transition:border-color .25s, background .25s, transform .25s; }
+  .ex-row:hover{ background:rgba(255,255,255,.055); border-color:rgba(255,255,255,.1); transform:translateX(2px); }
+  .ex-row[aria-current="true"]{ background:rgba(52,211,153,.09); border-color:rgba(52,211,153,.45);
+                                box-shadow:0 0 28px -12px rgba(52,211,153,.95); }
+  .ex-row[hidden]{ display:none }
+  .ex-quad{ position:relative; width:38px; height:38px; flex:none; border-radius:11px; overflow:hidden; }
+  .ex-quad span{ position:absolute; inset:0; opacity:.22 }
+  .ex-info{ flex:1; min-width:0 }
+  .ex-info b{ display:block; font-size:14px; font-weight:700; color:#e4e4ec; letter-spacing:-.01em; }
+  .ex-info small{ display:block; margin-top:1px; font-size:11.5px; color:#83838f }
+  .ex-row[aria-current="true"] .ex-info b{ color:#fff }
+  .ex-freccia{ flex:none; opacity:0; transform:translateX(-5px); color:#34d399; transition:.25s }
+  .ex-row[aria-current="true"] .ex-freccia{ opacity:1; transform:none }
+
+  .vet-schermo{ position:relative; overflow:hidden; border-radius:24px; border:1px solid rgba(255,255,255,.1);
+                background:linear-gradient(180deg,#111118,#0a0a10);
+                box-shadow:0 0 0 1px rgba(52,211,153,.09), 0 40px 90px -44px rgba(0,0,0,.95); }
+  .sc-barra{ display:flex; align-items:center; gap:6px; padding:11px 14px;
+             border-bottom:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); }
+  .sc-barra i{ display:block; width:9px; height:9px; border-radius:50%; background:#2c2c38 }
+  .sc-url{ margin-left:8px; flex:1; height:22px; border-radius:999px; background:rgba(255,255,255,.05);
+           display:flex; align-items:center; padding:0 11px; font-size:11px; color:#6f6f80 }
+  .sc-corpo{ padding:16px }
+  .sc-hero{ position:relative; height:154px; border-radius:16px; overflow:hidden; padding:16px;
+            display:flex; flex-direction:column; justify-content:flex-end }
+  .sc-hero span.tex{ position:absolute; inset:0; opacity:.18 }
+  .sc-hero::after{ content:''; position:absolute; inset:0;
+                   background:radial-gradient(80% 70% at 22% 4%,rgba(255,255,255,.28),transparent 62%) }
+  .sc-hero b{ position:relative; z-index:2; font-size:22px; font-weight:900; color:#fff; letter-spacing:-.03em;
+              text-shadow:0 2px 14px rgba(0,0,0,.55) }
+  .sc-hero em{ position:relative; z-index:2; margin-top:2px; font-style:normal; font-size:12px; font-weight:600;
+               color:rgba(255,255,255,.8) }
+  .sc-righe{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:12px }
+  .sc-righe div{ height:56px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.035) }
+  .sc-cta{ display:grid; grid-template-columns:1.6fr 1fr; gap:10px; margin-top:10px }
+  .sc-cta i{ display:block; height:42px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.035) }
+  .sc-cta i.verde{ border-color:rgba(52,211,153,.35); background:rgba(52,211,153,.14) }
+  .sc-testo{ padding:0 18px 20px }
+  .sc-testo h3{ margin-top:14px; font-size:19px; font-weight:800; color:#fafafa }
+  .sc-testo p{ margin-top:6px; font-size:13.5px; line-height:1.5; color:#95959f }
+  .ex-tag{ display:inline-block; padding:4px 10px; border-radius:999px; font-size:10px; font-weight:900;
+           letter-spacing:.1em; text-transform:uppercase; border:1px solid; background:rgba(255,255,255,.04) }
+  .t-food{ color:#fbbf24; border-color:rgba(251,191,36,.45) }
+  .t-beauty{ color:#c4b5fd; border-color:rgba(167,139,250,.45) }
+  .t-sport{ color:#6ee7b7; border-color:rgba(52,211,153,.45) }
+  .t-shop{ color:#93c5fd; border-color:rgba(96,165,250,.45) }
+  .sc-cambio{ animation:cambio .45s ease }
+  @keyframes cambio{ from{ opacity:.25; transform:scale(.99) } to{ opacity:1; transform:none } }
+
+  /* ===== schede del team, generate da config.js ===== */
+  .team-griglia{ display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); }
+  .tm{ position:relative; overflow:hidden; border-radius:20px; border:1px solid rgba(255,255,255,.09);
+       background:rgba(255,255,255,.025); padding:24px;
+       transition:transform .4s cubic-bezier(.2,.8,.2,1), border-color .4s, box-shadow .4s; }
+  .tm:hover{ transform:translateY(-5px); }
+  .tm-av{ width:48px; height:48px; border-radius:16px; display:grid; place-items:center;
+          font-size:18px; font-weight:900; color:#08080b; }
+  .tm h3{ margin-top:18px; font-size:18px; font-weight:800; color:#fafafa; }
+  .tm-role{ margin-top:4px; font-size:13px; font-weight:700; }
+  .tm-link{ margin-top:18px; display:inline-flex; align-items:center; gap:8px; padding:8px 15px;
+            border-radius:999px; border:1px solid rgba(255,255,255,.1); background:rgba(255,255,255,.05);
+            font-size:12.5px; font-weight:700; color:#d4d4d8; transition:.25s; }
+  .tm-link:hover{ transform:translateY(-2px); }
+  .tm-acid  .tm-av{ background:linear-gradient(140deg,#6ee7b7,#10b981 55%,#3b82f6); box-shadow:0 0 28px -8px rgba(52,211,153,.9); }
+  .tm-volt  .tm-av{ background:linear-gradient(140deg,#93c5fd,#3b82f6 55%,#8b5cf6); box-shadow:0 0 28px -8px rgba(96,165,250,.9); }
+  .tm-gold  .tm-av{ background:linear-gradient(140deg,#fbbf24,#f59e0b 55%,#f43f5e); box-shadow:0 0 28px -8px rgba(251,191,36,.85); }
+  .tm-iris  .tm-av{ background:linear-gradient(140deg,#a78bfa,#8b5cf6 55%,#3b82f6); box-shadow:0 0 28px -8px rgba(167,139,250,.9); }
+  .tm-acid  .tm-role{ color:#34d399 } .tm-volt .tm-role{ color:#60a5fa }
+  .tm-gold  .tm-role{ color:#fbbf24 } .tm-iris .tm-role{ color:#a78bfa }
+  .tm-acid:hover{ border-color:rgba(52,211,153,.38); box-shadow:0 28px 70px -30px rgba(16,185,129,.45) }
+  .tm-volt:hover{ border-color:rgba(96,165,250,.38); box-shadow:0 28px 70px -30px rgba(59,130,246,.45) }
+  .tm-gold:hover{ border-color:rgba(251,191,36,.38); box-shadow:0 28px 70px -30px rgba(245,158,11,.45) }
+  .tm-iris:hover{ border-color:rgba(167,139,250,.38); box-shadow:0 28px 70px -30px rgba(139,92,246,.45) }
+  .tm-acid .tm-link:hover{ border-color:rgba(52,211,153,.45); background:rgba(52,211,153,.1); color:#6ee7b7 }
+  .tm-volt .tm-link:hover{ border-color:rgba(96,165,250,.45); background:rgba(96,165,250,.1); color:#93c5fd }
+  .tm-gold .tm-link:hover{ border-color:rgba(251,191,36,.45); background:rgba(251,191,36,.1); color:#fbbf24 }
+  .tm-iris .tm-link:hover{ border-color:rgba(167,139,250,.45); background:rgba(167,139,250,.1); color:#c4b5fd }
+
+  /* pillole categoria */
+  .pill{
+    padding:8px 15px; border-radius:10px; font-size:13px; font-weight:700; white-space:nowrap;
+    color:#a1a1ad; border:1px solid rgba(255,255,255,.09); background:rgba(255,255,255,.035);
+    transition:color .25s, border-color .25s, background .25s, box-shadow .25s, transform .25s;
+  }
+  .pill:hover{ color:#e9e9f0; border-color:rgba(255,255,255,.2); transform:translateY(-1px); }
+  .pill[aria-pressed="true"]{
+    color:#06120e; border-color:transparent; background:linear-gradient(135deg,#6ee7b7,#10b981);
+    box-shadow:0 8px 24px -10px rgba(16,185,129,.85);
+  }
+
+  /* accordion */
+  details.q summary{ list-style:none; cursor:pointer; }
+  details.q summary::-webkit-details-marker{ display:none; }
+  details.q summary .plus{ transition:transform .3s; }
+  details.q[open] summary .plus{ transform:rotate(45deg); }
+
+  /* comparsa progressiva */
+  .rise{ opacity:0; transform:translateY(20px); transition:opacity .75s ease, transform .75s cubic-bezier(.2,.8,.2,1); }
+  .rise.on{ opacity:1; transform:none; }
+
+  /* menu a tendina */
+  .dd-menu{ opacity:0; visibility:hidden; transform:translateY(-8px) scale(.98); transform-origin:top right;
+            transition:opacity .2s, transform .2s, visibility .2s; }
+  .dd[data-open="true"] .dd-menu{ opacity:1; visibility:visible; transform:none; }
+  .dd[data-open="true"] .dd-caret{ transform:rotate(180deg); }
+  .dd-caret{ transition:transform .25s; }
+
+  /* ===== stati pilotati dal JavaScript, in CSS puro =====
+     Le classi aggiunte a runtime non vengono generate in modo affidabile
+     dalla CDN di Tailwind, quindi questi stati vivono qui. */
+  .fld{ transition:border-color .3s, background-color .3s, box-shadow .3s; }
+  .fld.hot{ border-color:rgba(52,211,153,.6) !important; background:rgba(52,211,153,.1) !important;
+            box-shadow:0 0 24px -8px rgba(52,211,153,.9); }
+
+  .sw{ background:rgba(255,255,255,.12); transition:background .35s ease; }
+  .sw.on{ background:linear-gradient(135deg,#6ee7b7,#10b981); }
+  .knob{ position:absolute; left:3px; top:3px; height:15px; width:15px; border-radius:999px;
+         background:#d4d4d8; transition:left .35s cubic-bezier(.2,.8,.2,1), background .35s; }
+  .sw.on .knob{ left:20px; background:#08080b; }
+
+  .hdr-stuck{ border-bottom-color:rgba(255,255,255,.08) !important; background:rgba(8,8,11,.88) !important; }
+
+  html{ scrollbar-color:#2a2a35 #08080b; scroll-padding-top:88px; overflow-x:hidden; }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation:none !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+    .rise{ opacity:1; transform:none; }
+  }
+</style>
+<noscript><style>.rise{opacity:1;transform:none}.dd{display:none}</style></noscript>
+</head>
+
+<body class="bg-ink-950 text-zinc-200 font-sans overflow-x-hidden">
+
+<!-- ============ SFONDO ANIMATO ============ -->
+<div aria-hidden="true" class="fixed inset-0 -z-10 overflow-hidden noise">
+  <svg class="absolute inset-0 h-full w-full opacity-[0.17]" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <pattern id="grid" width="58" height="58" patternUnits="userSpaceOnUse">
+        <path d="M58 0H0V58" fill="none" stroke="#3f3f46" stroke-width="1"/>
+      </pattern>
+      <radialGradient id="fade" cx="50%" cy="0%" r="75%">
+        <stop offset="0%" stop-color="white" stop-opacity="1"/>
+        <stop offset="100%" stop-color="white" stop-opacity="0"/>
+      </radialGradient>
+      <mask id="m"><rect width="100%" height="100%" fill="url(#fade)"/></mask>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#grid)" mask="url(#m)"/>
+  </svg>
+  <div class="absolute -top-56 -left-32 h-[560px] w-[560px] rounded-full bg-acid-500/25 blur-[110px] animate-drift"></div>
+  <div class="absolute -top-40 -right-40 h-[520px] w-[520px] rounded-full bg-volt-500/20 blur-[110px] animate-drift" style="animation-delay:-6s"></div>
+  <div class="absolute top-[1400px] left-1/3 h-[620px] w-[620px] rounded-full bg-iris-500/12 blur-[130px] animate-drift" style="animation-delay:-11s"></div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header id="hdr" class="sticky top-0 z-50 backdrop-blur-xl bg-ink-950/70 border-b border-transparent transition-colors duration-300">
+  <div class="mx-auto flex h-16 max-w-7xl items-center gap-3 px-5">
+    <a href="#top" class="flex items-center gap-2.5 text-[19px] font-black tracking-tight">
+      <span class="grid h-9 w-9 flex-none place-items-center rounded-[11px] bg-gradient-to-br from-white to-zinc-100 shadow-[0_0_24px_-6px_rgba(52,211,153,.6),inset_0_1px_0_rgba(255,255,255,.95)]">
+        <svg viewBox="10 9.5 44 44" class="h-6 w-6" fill="none" aria-hidden="true">
+          <path d="M17 24 L25 43" stroke="#059669" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M47 24 L39 43" stroke="#059669" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M25 43 L32 35 L39 43" stroke="#059669" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <polygon points="32,20 38,26 32,32 26,26" fill="#34d399" stroke="#059669" stroke-width="2.5" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span>Web<span class="bg-gradient-to-r from-acid-300 via-volt-300 to-iris-400 bg-clip-text text-transparent">Ora</span></span>
+    </a>
+
+    <nav class="ml-6 hidden items-center gap-1 lg:flex" aria-label="Navigazione principale">
+      <a href="#confronto"  class="rounded-full border border-transparent px-3 py-2 text-sm font-semibold text-zinc-400 transition hover:border-white/10 hover:bg-white/5 hover:text-zinc-100">Confronto</a>
+      <a href="#demo"       class="rounded-full border border-transparent px-3 py-2 text-sm font-semibold text-zinc-400 transition hover:border-white/10 hover:bg-white/5 hover:text-zinc-100">Esempi</a>
+      <a href="#autonomia"  class="rounded-full border border-transparent px-3 py-2 text-sm font-semibold text-zinc-400 transition hover:border-white/10 hover:bg-white/5 hover:text-zinc-100">Autonomia</a>
+      <a href="#team"       class="rounded-full border border-transparent px-3 py-2 text-sm font-semibold text-zinc-400 transition hover:border-white/10 hover:bg-white/5 hover:text-zinc-100">Chi siamo</a>
+      <a href="#prezzi"     class="rounded-full border border-transparent px-3 py-2 text-sm font-semibold text-zinc-400 transition hover:border-white/10 hover:bg-white/5 hover:text-zinc-100">Prezzi</a>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2">
+      <!-- menu a tendina compatto -->
+      <div class="dd relative" id="dd" data-open="false">
+        <button id="ddBtn" aria-haspopup="true" aria-expanded="false" aria-controls="ddMenu"
+          class="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-2 text-[13.5px] font-semibold text-zinc-400 transition hover:border-white/20 hover:text-zinc-100">
+          Info
+          <svg class="dd-caret h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="ddMenu" role="menu" aria-labelledby="ddBtn"
+          class="dd-menu absolute right-0 top-[calc(100%+9px)] min-w-[218px] rounded-2xl border border-white/20 bg-[#0d0d14] p-1.5 shadow-[0_30px_70px_-14px_rgba(0,0,0,1),0_0_0_1px_rgba(52,211,153,.14)]">
+          <a href="#faq" role="menuitem" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-zinc-400 transition hover:bg-acid-400/10 hover:text-acid-300">
+            <svg class="h-4 w-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.2a2.5 2.5 0 1 1 3.4 2.3c-.7.3-1 .8-1 1.6"/><path d="M12 17h.01"/></svg>
+            Domande frequenti
+          </a>
+          <a href="#privacy" role="menuitem" data-privacy class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-zinc-400 transition hover:bg-acid-400/10 hover:text-acid-300">
+            <svg class="h-4 w-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.3-2.9 7.8-7 9.5c-4.1-1.7-7-5.2-7-9.5V6z"/></svg>
+            Note legali e privacy
+          </a>
+          <a href="#contatti" role="menuitem" class="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-zinc-400 transition hover:bg-acid-400/10 hover:text-acid-300">
+            <svg class="h-4 w-4 opacity-80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+            Contatti
+          </a>
+          <div class="my-1.5 mx-2 h-px bg-white/8"></div>
+          <p class="px-3 pb-1.5 pt-1 text-[11.5px] leading-snug text-zinc-500">Rispondiamo di persona, di solito entro poche ore.</p>
+        </div>
+      </div>
+
+      <a data-wa href="#" target="_blank" rel="noopener"
+        class="flex items-center gap-2 rounded-full border border-acid-400/35 bg-acid-400/10 px-3.5 py-2 text-[13.5px] font-bold text-acid-300 shadow-[0_0_24px_-8px_rgba(52,211,153,.7)] transition hover:border-acid-400/60 hover:bg-acid-400/20">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2m5.8 14.16c-.24.68-1.42 1.31-1.96 1.36c-.5.05-.98.24-3.32-.69c-2.79-1.1-4.56-3.95-4.7-4.13c-.14-.18-1.13-1.5-1.13-2.87s.72-2.04.97-2.32c.25-.28.55-.35.73-.35c.18 0 .37 0 .53.01c.17.01.4-.06.63.48c.24.55.8 1.92.87 2.06c.07.14.12.3.02.48c-.09.18-.14.29-.28.45c-.14.16-.29.36-.42.48c-.14.14-.28.29-.12.57c.16.28.72 1.18 1.54 1.91c1.06.94 1.95 1.23 2.23 1.37c.28.14.44.12.6-.07c.16-.19.69-.8.87-1.08c.18-.28.37-.23.62-.14c.25.09 1.61.76 1.89.9c.28.14.46.21.53.32c.07.12.07.66-.17 1.34"/></svg>
+        <span class="hidden sm:inline">WhatsApp</span>
+      </a>
+
+      <a href="#contatti"
+        class="hidden rounded-full bg-gradient-to-br from-acid-300 via-acid-400 to-acid-600 px-4 py-2 text-[13.5px] font-bold text-ink-950 shadow-[0_0_0_1px_rgba(52,211,153,.5),0_12px_32px_-12px_rgba(52,211,153,.8)] transition hover:-translate-y-0.5 hover:shadow-[0_0_0_1px_rgba(52,211,153,.7),0_18px_44px_-12px_rgba(52,211,153,.95)] md:block">
+        Anteprima gratuita
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="relative mx-auto max-w-7xl px-5 pb-20 pt-14 sm:pt-20">
+  <div class="grid w-full items-center gap-12 lg:grid-cols-[1.12fr_.88fr] lg:gap-14 xl:gap-20">
+
+    <div>
+      <h1 class="text-[clamp(30px,3.7vw,50px)] font-black leading-[1.08]">
+        <span class="riga1">Il sito della tua attività.</span><br>
+        <span class="bg-gradient-to-r from-acid-300 via-acid-400 to-volt-400 bg-clip-text text-transparent">Da 70€ a 150€.</span><br>
+        Non 1.500€.
+      </h1>
+
+      <p class="mt-6 max-w-[58ch] text-[17px] leading-relaxed text-zinc-400">
+        Siamo un team di sviluppatori di Informatica. Costruiamo siti veri, veloci e fatti bene per negozi, ristoranti,
+        palestre e centri estetici a partire da <span class="font-bold text-zinc-100">70€ una tantum</span>, più le sole
+        spese di dominio e server. Le agenzie chiedono 1.500€ e tre mesi di attesa.
+        Noi ti mandiamo online in <span class="font-bold text-acid-300">1 o 5 giorni</span>.
+      </p>
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a data-wa href="#" target="_blank" rel="noopener"
+          class="flex items-center gap-2.5 rounded-full bg-gradient-to-br from-acid-300 via-acid-400 to-acid-600 px-7 py-4 text-[15.5px] font-bold text-ink-950 shadow-[0_0_0_1px_rgba(52,211,153,.5),0_16px_44px_-14px_rgba(52,211,153,.9)] transition hover:-translate-y-0.5 hover:shadow-[0_0_0_1px_rgba(52,211,153,.75),0_22px_56px_-14px_rgba(52,211,153,1)]">
+          <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2m5.8 14.16c-.24.68-1.42 1.31-1.96 1.36c-.5.05-.98.24-3.32-.69c-2.79-1.1-4.56-3.95-4.7-4.13c-.14-.18-1.13-1.5-1.13-2.87s.72-2.04.97-2.32c.25-.28.55-.35.73-.35c.18 0 .37 0 .53.01c.17.01.4-.06.63.48c.24.55.8 1.92.87 2.06c.07.14.12.3.02.48c-.09.18-.14.29-.28.45c-.14.16-.29.36-.42.48c-.14.14-.28.29-.12.57c.16.28.72 1.18 1.54 1.91c1.06.94 1.95 1.23 2.23 1.37c.28.14.44.12.6-.07c.16-.19.69-.8.87-1.08c.18-.28.37-.23.62-.14c.25.09 1.61.76 1.89.9c.28.14.46.21.53.32c.07.12.07.66-.17 1.34"/></svg>
+          Voglio la mia anteprima gratuita
+        </a>
+        <a href="#demo"
+          class="flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.05] px-6 py-4 text-[15.5px] font-bold text-zinc-100 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/10">
+          Guarda gli esempi
+        </a>
+      </div>
+
+      <p class="mt-4 text-[13px] text-zinc-500">
+        Te la mandiamo su WhatsApp, funzionante e senza impegno. Nessuna carta, nessun anticipo.
+      </p>
+    </div>
+
+    <!-- ===== mockup fluttuante, resta dentro la sua colonna ===== -->
+    <div class="relative w-full lg:pl-2">
+      <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 -inset-y-10 bg-[radial-gradient(62%_55%_at_55%_45%,rgba(52,211,153,.26),transparent_70%)] blur-2xl"></div>
+
+      <div class="relative animate-float">
+        <!-- finestra browser, allineata a destra per lasciare posto al riquadro prezzo -->
+        <div class="relative ml-auto w-full overflow-hidden rounded-[22px] border border-white/12 bg-gradient-to-b from-ink-850 to-ink-950 glow-acid sm:w-[92%]">
+          <div class="flex items-center gap-2 border-b border-white/8 bg-white/[0.03] px-4 py-3">
+            <span class="h-2.5 w-2.5 rounded-full bg-zinc-700"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-zinc-700"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-zinc-700"></span>
+            <span class="ml-2 flex h-6 flex-1 items-center rounded-full bg-white/5 px-3 text-[11px] text-zinc-500">latuapizzeria.it</span>
+          </div>
+
+          <div class="p-4 pb-14">
+            <div class="relative flex h-28 flex-col justify-end gap-2 overflow-hidden rounded-2xl bg-gradient-to-br from-acid-500/30 via-volt-500/20 to-iris-500/25 p-4">
+              <span class="shine animate-sweep"></span>
+              <div class="h-3 w-[62%] rounded bg-white/25"></div>
+              <div class="h-2 w-[40%] rounded bg-white/15"></div>
+            </div>
+
+            <div class="mt-3 grid grid-cols-3 gap-2.5">
+              <div class="flex h-16 flex-col justify-end gap-1.5 rounded-xl border border-white/8 bg-white/[0.035] p-2.5">
+                <div class="h-1.5 w-[75%] rounded bg-white/18"></div><div class="h-1.5 w-[50%] rounded bg-white/10"></div>
+              </div>
+              <div class="flex h-16 flex-col justify-end gap-1.5 rounded-xl border border-white/8 bg-white/[0.035] p-2.5">
+                <div class="h-1.5 w-[65%] rounded bg-white/18"></div><div class="h-1.5 w-[44%] rounded bg-white/10"></div>
+              </div>
+              <div class="flex h-16 flex-col justify-end gap-1.5 rounded-xl border border-white/8 bg-white/[0.035] p-2.5">
+                <div class="h-1.5 w-[80%] rounded bg-white/18"></div><div class="h-1.5 w-[38%] rounded bg-white/10"></div>
+              </div>
+            </div>
+
+            <div class="mt-2.5 grid grid-cols-[1.5fr_1fr] gap-2.5">
+              <div class="flex h-12 items-center rounded-xl border border-white/8 bg-white/[0.035] px-3">
+                <div class="h-1.5 w-[60%] rounded bg-white/14"></div>
+              </div>
+              <div class="flex h-12 items-center justify-center rounded-xl border border-acid-400/35 bg-acid-400/15">
+                <div class="h-1.5 w-[62%] rounded bg-acid-300/70"></div>
+              </div>
+            </div>
+          </div>
+
+          <span class="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full border border-acid-400/45 bg-ink-950/85 px-3 py-1.5 text-[11.5px] font-bold text-acid-300 backdrop-blur">
+            <span class="h-1.5 w-1.5 rounded-full bg-acid-400 animate-halo"></span> Anteprima pronta
+          </span>
+        </div>
+
+        <!-- badge sconto fluttuante -->
+        <div class="absolute left-0 top-24 w-[172px] rounded-2xl border border-white/14 bg-ink-900/97 p-4 shadow-[0_26px_60px_-22px_rgba(0,0,0,.95)] backdrop-blur-xl animate-float-slow sm:w-[184px]" style="animation-delay:-2.5s">
+          <p class="text-[10.5px] font-bold uppercase tracking-[.14em] text-zinc-500">Prezzo di un'agenzia</p>
+          <p class="mt-1 text-[19px] font-black text-zinc-600 line-through decoration-flare-500 decoration-2">1.500 €</p>
+          <div class="my-3 h-px bg-white/8"></div>
+          <p class="text-[10.5px] font-bold uppercase tracking-[.14em] text-acid-400">Con WebOra</p>
+          <div class="mt-1 flex items-baseline gap-2">
+            <p class="text-[26px] font-black text-zinc-50">70 €</p>
+            <span class="rounded-full bg-acid-400/15 px-2 py-0.5 text-[11px] font-black text-acid-300">&minus;90%</span>
+          </div>
+        </div>
+
+        <!-- badge tempi fluttuante -->
+        <div class="absolute -bottom-7 right-0 flex items-center gap-2.5 rounded-2xl border border-white/14 bg-ink-900/97 px-4 py-3 shadow-[0_26px_60px_-22px_rgba(0,0,0,.95)] backdrop-blur-xl animate-float-slow" style="animation-delay:-5s">
+          <span class="grid h-9 w-9 place-items-center rounded-xl border border-volt-400/30 bg-volt-400/12 text-volt-300">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          </span>
+          <span>
+            <span class="block text-[13px] font-black leading-tight text-zinc-100">1 o 5 giorni</span>
+            <span class="block text-[11px] text-zinc-500">e sei online</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRISCIA METRICHE ============ -->
+<section class="border-y border-white/6 bg-white/[0.018]">
+  <div class="mx-auto grid max-w-7xl grid-cols-1 divide-y divide-white/6 px-0 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+    <div class="rise px-6 py-9 text-center transition hover:bg-acid-400/[0.04]">
+      <b class="block bg-gradient-to-br from-acid-300 to-acid-500 bg-clip-text text-[clamp(30px,4.4vw,42px)] font-black leading-none text-transparent">&minus;90%</b>
+      <span class="mt-2.5 block text-[13px] text-zinc-500">del prezzo rispetto a un'agenzia</span>
+    </div>
+    <div class="rise px-6 py-9 text-center transition hover:bg-volt-400/[0.04]">
+      <b class="block text-[clamp(30px,4.4vw,42px)] font-black leading-none text-zinc-50">1 o 5 giorni</b>
+      <span class="mt-2.5 block text-[13px] text-zinc-500">per andare online</span>
+    </div>
+    <div class="rise px-6 py-9 text-center transition hover:bg-iris-400/[0.04]">
+      <b class="block text-[clamp(30px,4.4vw,42px)] font-black leading-none text-zinc-50">2 clic</b>
+      <span class="mt-2.5 block text-[13px] text-zinc-500">per cambiare orari e prezzi</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONFRONTO ============ -->
+<section id="confronto" class="mx-auto max-w-7xl px-5 py-24">
+  <div class="max-w-3xl">
+    <span class="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[.16em] text-acid-400">
+      <span class="h-px w-6 bg-gradient-to-r from-transparent to-acid-400"></span> Il confronto
+    </span>
+    <h2 class="mt-4 text-[clamp(28px,4.4vw,42px)] font-black leading-[1.1]">Stesso risultato. Un decimo del prezzo.</h2>
+    <p class="mt-4 text-[16.5px] leading-relaxed text-zinc-400">
+      Non diciamo che le agenzie lavorino male. Diciamo solo che per il sito della tua attività non hai bisogno
+      di mantenere commerciali, project manager e uffici in centro.
+    </p>
+  </div>
+
+  <div class="mt-10 grid items-start gap-5 lg:grid-cols-2">
+
+    <!-- AGENZIA, rosso -->
+    <div class="rise relative overflow-hidden rounded-3xl border border-flare-500/30 bg-gradient-to-b from-flare-500/[0.09] to-flare-500/[0.02] p-7 glow-flare">
+      <span class="beam beam-flare"></span>
+      <div class="flex items-center gap-3">
+        <span class="grid h-11 w-11 flex-none place-items-center rounded-2xl border border-flare-500/40 bg-flare-500/15 text-[17px] font-black text-flare-400">✕</span>
+        <div>
+          <h3 class="text-[19px] font-black text-zinc-100">Agenzia tradizionale</h3>
+          <p class="text-[12.5px] font-semibold text-zinc-500">Il percorso classico</p>
+        </div>
+      </div>
+
+      <ul class="mt-7 divide-y divide-white/6">
+        <li class="flex gap-3.5 py-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-flare-500/15 text-[12px] font-black text-flare-400">✕</span>
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[.12em] text-zinc-600">Quanto costa</p>
+            <p class="mt-1 text-[15px] text-zinc-400"><b class="font-bold text-flare-400">1.500€ e oltre</b>, più le voci che spuntano dopo.</p>
+          </div>
+        </li>
+        <li class="flex gap-3.5 py-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-flare-500/15 text-[12px] font-black text-flare-400">✕</span>
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[.12em] text-zinc-600">Quanto si aspetta</p>
+            <p class="mt-1 text-[15px] text-zinc-400"><b class="font-bold text-flare-400">Tre mesi</b>, tra briefing, approvazioni e revisioni che rimbalzano.</p>
+          </div>
+        </li>
+        <li class="flex gap-3.5 py-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-flare-500/15 text-[12px] font-black text-flare-400">✕</span>
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[.12em] text-zinc-600">Cambiare un orario</p>
+            <p class="mt-1 text-[15px] text-zinc-400"><b class="font-bold text-flare-400">Ticket</b>, risposta in cinque giorni lavorativi.</p>
+          </div>
+        </li>
+        <li class="flex gap-3.5 pt-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-flare-500/15 text-[12px] font-black text-flare-400">✕</span>
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[.12em] text-zinc-600">Spese ricorrenti</p>
+            <p class="mt-1 text-[15px] text-zinc-400"><b class="font-bold text-flare-400">Canoni gonfiati</b>, con dominio e server rivenduti a tre volte il prezzo.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- WEBORA, verde luminoso -->
+    <div class="rise relative overflow-hidden rounded-3xl border border-acid-400/40 bg-gradient-to-b from-acid-400/[0.12] to-acid-400/[0.02] p-7 shadow-[0_36px_90px_-38px_rgba(16,185,129,.75)]">
+      <span class="beam"></span>
+      <div class="flex items-center gap-3">
+        <span class="grid h-11 w-11 flex-none place-items-center rounded-2xl border border-acid-400/45 bg-acid-400/18 text-[17px] font-black text-acid-400">✓</span>
+        <div>
+          <h3 class="text-[19px] font-black text-zinc-50" data-brand>WebOra</h3>
+          <p class="text-[12.5px] font-semibold text-acid-400/80">Il nostro modo</p>
+        </div>
+      </div>
+
+      <ul class="mt-7 divide-y divide-white/8">
+        <li class="flex gap-3.5 py-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/18 text-[12px] font-black text-acid-400">✓</span>
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[.12em] text-acid-400/70">Quanto costa</p>
+            <p class="mt-1 text-[15px] text-zinc-300"><b class="font-bold text-acid-300">Da 70€ a 150€ una tantum</b>, il prezzo che leggi è quello che paghi.</p>
+          </div>
+        </li>
+        <li class="flex gap-3.5 py-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/18 text-[12px] font-black text-acid-400">✓</span>
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[.12em] text-acid-400/70">Quanto si aspetta</p>
+            <p class="mt-1 text-[15px] text-zinc-300"><b class="font-bold text-acid-300">1 o 5 giorni</b>, dalla prima chiacchierata alla pubblicazione.</p>
+          </div>
+        </li>
+        <li class="flex gap-3.5 py-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/18 text-[12px] font-black text-acid-400">✓</span>
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[.12em] text-acid-400/70">Cambiare un orario</p>
+            <p class="mt-1 text-[15px] text-zinc-300"><b class="font-bold text-acid-300">2 clic</b>, dal tuo telefono, quando vuoi tu.</p>
+          </div>
+        </li>
+        <li class="flex gap-3.5 pt-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/18 text-[12px] font-black text-acid-400">✓</span>
+          <div>
+            <p class="text-[11px] font-black uppercase tracking-[.12em] text-acid-400/70">Spese ricorrenti</p>
+            <p class="mt-1 text-[15px] text-zinc-300"><b class="font-bold text-acid-300">Canone chiaro</b>, pochi euro al mese per dominio/server, scritto nel listino.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VETRINA ESEMPI, ELENCO E ANTEPRIMA ============ -->
+<section id="demo" class="border-y border-white/6 bg-white/[0.015] py-20">
+  <div class="mx-auto max-w-7xl px-5">
+    <div class="max-w-3xl">
+      <span class="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[.16em] text-volt-400">
+        <span class="h-px w-6 bg-gradient-to-r from-transparent to-volt-400"></span> Vetrina esempi
+      </span>
+      <h2 class="mt-4 text-[clamp(28px,4.4vw,42px)] font-black leading-[1.1]">Come diventa la tua attività.</h2>
+      <p class="mt-4 text-[16.5px] leading-relaxed text-zinc-400">
+        Scegli un'attività dall'elenco e guarda subito la sua anteprima.
+        Ogni esempio è un impianto reale che adattiamo al tuo nome, ai tuoi colori e alle tue foto.
+      </p>
+    </div>
+
+    <div class="mt-7 flex flex-wrap gap-2" role="group" aria-label="Filtra gli esempi per categoria">
+      <button type="button" class="pill" aria-pressed="true"  data-filter="all">Tutte</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="food">Ristorazione</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="beauty">Barber e bellezza</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="sport">Sport e fitness</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="shop">Negozi locali</button>
+    </div>
+
+    <div class="vet rise mt-7">
+      <div class="vet-lista" id="exLista" role="list" aria-label="Elenco degli esempi">
+        <button type="button" class="ex-row" data-cat="food" data-tag="Ristorazione" data-nome="Da Nino"
+          data-sub="Pizzeria e forno a legna" data-titolo="Pizzeria da Nino" data-url="latuapizzeria.it" data-desc="Menù sempre aggiornato, orari del forno in evidenza e ordine su WhatsApp in due tocchi."
+          data-grad="linear-gradient(140deg,#2a1410,#8f2f22 55%,#e0642f)" data-tex="radial-gradient(rgba(255,255,255,.9) 1.1px,transparent 1.1px);background-size:13px 13px" aria-current="true">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#2a1410,#8f2f22 55%,#e0642f)"><span style="background-image:radial-gradient(rgba(255,255,255,.9) 1.1px,transparent 1.1px);background-size:13px 13px"></span></span>
+          <span class="ex-info"><b>Pizzeria da Nino</b><small>Ristorazione</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="beauty" data-tag="Barber e bellezza" data-nome="Sala 12"
+          data-sub="Barber shop dal 1998" data-titolo="Barbiere Sala 12" data-url="barbieresala12.it" data-desc="Listino tagli, foto dei lavori e prenotazione rapida direttamente dallo smartphone."
+          data-grad="linear-gradient(140deg,#101014,#33343d 52%,#8b8f9e)" data-tex="repeating-linear-gradient(90deg,rgba(255,255,255,.8) 0 1px,transparent 1px 9px)">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#101014,#33343d 52%,#8b8f9e)"><span style="background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.8) 0 1px,transparent 1px 9px)"></span></span>
+          <span class="ex-info"><b>Barbiere Sala 12</b><small>Barber e bellezza</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="sport" data-tag="Sport e fitness" data-nome="Iron Club"
+          data-sub="Sala pesi e corsi" data-titolo="Palestra Iron Club" data-url="ironclub.it" data-desc="Abbonamenti a confronto, orario dei corsi della settimana e prova gratuita in due tocchi."
+          data-grad="linear-gradient(140deg,#1a1206,#6b4408 55%,#f2a72c)" data-tex="repeating-linear-gradient(45deg,rgba(255,255,255,.7) 0 1px,transparent 1px 10px)">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#1a1206,#6b4408 55%,#f2a72c)"><span style="background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.7) 0 1px,transparent 1px 10px)"></span></span>
+          <span class="ex-info"><b>Palestra Iron Club</b><small>Sport e fitness</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="shop" data-tag="Negozi locali" data-nome="Vera"
+          data-sub="Boutique e accessori" data-titolo="Boutique Vera" data-url="boutiquevera.it" data-desc="Vetrina dei capi, novità della settimana e indicazioni per raggiungere il negozio."
+          data-grad="linear-gradient(140deg,#1d1526,#4a2f6b 55%,#a07ad6)" data-tex="radial-gradient(rgba(255,255,255,.9) 1.1px,transparent 1.1px);background-size:15px 15px">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#1d1526,#4a2f6b 55%,#a07ad6)"><span style="background-image:radial-gradient(rgba(255,255,255,.9) 1.1px,transparent 1.1px);background-size:15px 15px"></span></span>
+          <span class="ex-info"><b>Boutique Vera</b><small>Negozi locali</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="food" data-tag="Ristorazione" data-nome="Il Cortile"
+          data-sub="Cucina di casa" data-titolo="Trattoria Il Cortile" data-url="trattoriailcortile.it" data-desc="Piatti del giorno che cambi in un minuto, galleria della sala e richiesta tavolo diretta."
+          data-grad="linear-gradient(140deg,#231409,#7c3a1c 55%,#c2683a)" data-tex="repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 1px,transparent 1px 12px)">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#231409,#7c3a1c 55%,#c2683a)"><span style="background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 1px,transparent 1px 12px)"></span></span>
+          <span class="ex-info"><b>Trattoria Il Cortile</b><small>Ristorazione</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="beauty" data-tag="Barber e bellezza" data-nome="Lume"
+          data-sub="Nail e make up studio" data-titolo="Nail Studio Lume" data-url="nailstudiolume.it" data-desc="Galleria dei lavori che carichi tu, pacchetti con prezzi chiari e contatto immediato."
+          data-grad="linear-gradient(140deg,#2a1226,#6d2258 55%,#d876ae)" data-tex="radial-gradient(rgba(255,255,255,.9) 1.2px,transparent 1.2px);background-size:12px 12px">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#2a1226,#6d2258 55%,#d876ae)"><span style="background-image:radial-gradient(rgba(255,255,255,.9) 1.2px,transparent 1.2px);background-size:12px 12px"></span></span>
+          <span class="ex-info"><b>Nail Studio Lume</b><small>Barber e bellezza</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="sport" data-tag="Sport e fitness" data-nome="Center Nord"
+          data-sub="Padel e tennis" data-titolo="Padel Center Nord" data-url="padelcenternord.it" data-desc="Disponibilità dei campi, tariffe per fascia oraria e prenotazione diretta su WhatsApp."
+          data-grad="linear-gradient(140deg,#04231c,#0d6b4d 55%,#38d38f)" data-tex="repeating-linear-gradient(0deg,rgba(255,255,255,.6) 0 1px,transparent 1px 15px),repeating-linear-gradient(90deg,rgba(255,255,255,.6) 0 1px,transparent 1px 15px)">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#04231c,#0d6b4d 55%,#38d38f)"><span style="background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.6) 0 1px,transparent 1px 15px),repeating-linear-gradient(90deg,rgba(255,255,255,.6) 0 1px,transparent 1px 15px)"></span></span>
+          <span class="ex-info"><b>Padel Center Nord</b><small>Sport e fitness</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="shop" data-tag="Negozi locali" data-nome="Le Rose"
+          data-sub="Fiori e composizioni" data-titolo="Fioraio Le Rose" data-url="fioraiolerose.it" data-desc="Catalogo per occasione, consegne in zona e ordini rapidi per ricorrenze e cerimonie."
+          data-grad="linear-gradient(140deg,#132018,#2f6b3a 55%,#8fd66a)" data-tex="repeating-radial-gradient(circle at 0 100%,rgba(255,255,255,.55) 0 1px,transparent 1px 14px)">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#132018,#2f6b3a 55%,#8fd66a)"><span style="background-image:repeating-radial-gradient(circle at 0 100%,rgba(255,255,255,.55) 0 1px,transparent 1px 14px)"></span></span>
+          <span class="ex-info"><b>Fioraio Le Rose</b><small>Negozi locali</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="food" data-tag="Ristorazione" data-nome="Centrale"
+          data-sub="Bar e caffetteria" data-titolo="Bar Centrale" data-url="barcentrale.it" data-desc="Colazioni, aperitivi e orari continuati. Un QR sul bancone porta il cliente direttamente qui."
+          data-grad="linear-gradient(140deg,#141a2c,#2b3f6b 55%,#5f7fd8)" data-tex="radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:11px 11px">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#141a2c,#2b3f6b 55%,#5f7fd8)"><span style="background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:11px 11px"></span></span>
+          <span class="ex-info"><b>Bar Centrale</b><small>Ristorazione</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="beauty" data-tag="Barber e bellezza" data-nome="Aura"
+          data-sub="Centro estetico" data-titolo="Centro estetico Aura" data-url="centroaura.it" data-desc="Trattamenti divisi per categoria, promozioni stagionali e richiesta appuntamento in un tocco."
+          data-grad="linear-gradient(140deg,#10221f,#1f5a4c 55%,#5fc7a6)" data-tex="repeating-radial-gradient(circle at 100% 0,rgba(255,255,255,.5) 0 1px,transparent 1px 15px)">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#10221f,#1f5a4c 55%,#5fc7a6)"><span style="background-image:repeating-radial-gradient(circle at 100% 0,rgba(255,255,255,.5) 0 1px,transparent 1px 15px)"></span></span>
+          <span class="ex-info"><b>Centro estetico Aura</b><small>Barber e bellezza</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="sport" data-tag="Sport e fitness" data-nome="Respiro"
+          data-sub="Yoga e pilates" data-titolo="Yoga Spazio Respiro" data-url="spaziorespiro.it" data-desc="Calendario delle lezioni, presentazione degli istruttori e prima prova prenotabile online."
+          data-grad="linear-gradient(140deg,#161031,#3c2a80 55%,#9b83f5)" data-tex="repeating-radial-gradient(circle at 50% 100%,rgba(255,255,255,.5) 0 1px,transparent 1px 18px)">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#161031,#3c2a80 55%,#9b83f5)"><span style="background-image:repeating-radial-gradient(circle at 50% 100%,rgba(255,255,255,.5) 0 1px,transparent 1px 18px)"></span></span>
+          <span class="ex-info"><b>Yoga Spazio Respiro</b><small>Sport e fitness</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+        <button type="button" class="ex-row" data-cat="shop" data-tag="Negozi locali" data-nome="TechFix"
+          data-sub="Riparazioni e assistenza" data-titolo="TechFix riparazioni" data-url="techfixriparazioni.it" data-desc="Servizi con tempi e prezzi indicativi, e stato della riparazione consultabile su richiesta."
+          data-grad="linear-gradient(140deg,#0a1a24,#155069 55%,#4fc0e8)" data-tex="repeating-linear-gradient(135deg,rgba(255,255,255,.6) 0 1px,transparent 1px 11px)">
+          <span class="ex-quad" style="background:linear-gradient(140deg,#0a1a24,#155069 55%,#4fc0e8)"><span style="background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.6) 0 1px,transparent 1px 11px)"></span></span>
+          <span class="ex-info"><b>TechFix riparazioni</b><small>Negozi locali</small></span>
+          <svg class="ex-freccia" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <div class="vet-schermo" id="exSchermo">
+        <div class="sc-barra">
+          <i></i><i></i><i></i>
+          <span class="sc-url" id="scUrl">latuapizzeria.it</span>
+        </div>
+        <div class="sc-corpo">
+          <div class="sc-hero" id="scHero" style="background:linear-gradient(140deg,#2a1410,#8f2f22 55%,#e0642f)">
+            <span class="tex" id="scTex" style="background-image:radial-gradient(rgba(255,255,255,.9) 1.1px,transparent 1.1px);background-size:13px 13px"></span>
+            <b id="scNome">Da Nino</b>
+            <em id="scSub">Pizzeria e forno a legna</em>
+          </div>
+          <div class="sc-righe"><div></div><div></div><div></div></div>
+          <div class="sc-cta"><i></i><i class="verde"></i></div>
+        </div>
+        <div class="sc-testo">
+          <span class="ex-tag t-food" id="scTag">Ristorazione</span>
+          <h3 id="scTitolo">Pizzeria da Nino</h3>
+          <p id="scDesc">Menù sempre aggiornato, orari del forno in evidenza e ordine su WhatsApp in due tocchi.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AUTONOMIA ============ -->
+<section id="autonomia" class="mx-auto max-w-7xl px-5 py-24">
+  <div class="max-w-3xl">
+    <span class="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[.16em] text-acid-400">
+      <span class="h-px w-6 bg-gradient-to-r from-transparent to-acid-400"></span> Autonomia e assistenza
+    </span>
+    <h2 class="mt-4 text-[clamp(28px,4.4vw,42px)] font-black leading-[1.1]">Modificalo da solo. In 60 secondi.</h2>
+    <p class="mt-4 text-[16.5px] leading-relaxed text-zinc-400">
+      Niente pannelli complicati, niente corsi da seguire. Apri, tocchi, scrivi, salvi.
+      Ed è già online per tutti.
+    </p>
+  </div>
+
+  <div class="mt-12 grid items-center gap-10 lg:grid-cols-[.8fr_1.2fr]">
+
+    <!-- telefono -->
+    <div class="rise relative mx-auto w-[262px]">
+      <div aria-hidden="true" class="pointer-events-none absolute -inset-10 bg-[radial-gradient(55%_50%_at_50%_45%,rgba(52,211,153,.3),transparent_70%)] blur-2xl"></div>
+      <div class="relative rounded-[36px] border border-white/12 bg-gradient-to-b from-ink-800 to-ink-950 p-3 shadow-[0_44px_90px_-40px_rgba(0,0,0,.95)] glow-acid">
+        <span class="absolute left-1/2 top-[18px] h-1.5 w-14 -translate-x-1/2 rounded-full bg-white/15"></span>
+        <span id="timer" class="absolute -top-4 right-5 rounded-full border border-acid-400/45 bg-ink-950/90 px-3 py-1.5 text-[11.5px] font-black text-acid-300 shadow-[0_0_26px_-10px_rgba(52,211,153,.9)]">00:41</span>
+
+        <div class="flex min-h-[400px] flex-col gap-2.5 rounded-[27px] border border-white/8 bg-ink-950 px-3.5 pb-4 pt-8">
+          <div class="flex items-center justify-between border-b border-white/8 pb-2.5">
+            <b class="text-[12.5px] font-extrabold text-zinc-100">Pannello WebOra</b>
+            <em id="scrState" class="text-[10px] font-black not-italic tracking-[.08em] text-acid-400">MODIFICA</em>
+          </div>
+
+          <div id="f1" class="fld rounded-xl border border-white/8 bg-white/[0.03] px-3 py-2.5">
+            <label class="block text-[9.5px] font-bold uppercase tracking-[.1em] text-zinc-500">Prezzo del piatto</label>
+            <div class="mt-1 flex items-center gap-1.5 text-[14.5px] font-bold text-zinc-100">
+              <span id="v1">6,50 €</span><span id="c1" hidden class="inline-block h-4 w-0.5 bg-acid-400 animate-blink"></span>
+            </div>
+          </div>
+
+          <div id="f2" class="fld rounded-xl border border-white/8 bg-white/[0.03] px-3 py-2.5">
+            <label class="block text-[9.5px] font-bold uppercase tracking-[.1em] text-zinc-500">Chiusura serale</label>
+            <div class="mt-1 flex items-center gap-1.5 text-[14.5px] font-bold text-zinc-100">
+              <span id="v2">23:00</span><span id="c2" hidden class="inline-block h-4 w-0.5 bg-acid-400 animate-blink"></span>
+            </div>
+          </div>
+
+          <div id="f3" class="fld rounded-xl border border-white/8 bg-white/[0.03] px-3 py-2.5">
+            <label class="block text-[9.5px] font-bold uppercase tracking-[.1em] text-zinc-500">Consegna a domicilio</label>
+            <div class="mt-1 flex items-center justify-between gap-2 text-[14.5px] font-bold text-zinc-100">
+              <span id="v3">Non attiva</span>
+              <span id="sw3" class="sw relative h-[21px] w-[38px] flex-none rounded-full"></span>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-white/8 bg-white/[0.03] px-3 py-2.5">
+            <label class="block text-[9.5px] font-bold uppercase tracking-[.1em] text-zinc-500">Avviso in cima al sito</label>
+            <div class="mt-1 text-[12.5px] text-zinc-400">Chiusi il 15 agosto</div>
+          </div>
+
+          <div id="saveBtn" class="mt-auto rounded-xl bg-gradient-to-br from-acid-300 to-acid-500 py-3 text-center text-[13px] font-black text-ink-950 shadow-[0_10px_26px_-12px_rgba(52,211,153,.95)] transition-all duration-300">
+            Salva e pubblica
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- box unico -->
+    <div class="rise relative overflow-hidden rounded-3xl border border-white/8 bg-white/[0.025] p-8 sm:p-10">
+      <span class="beam"></span>
+      <div class="flex items-center gap-3">
+        <span class="grid h-11 w-11 place-items-center rounded-2xl border border-acid-400/30 bg-acid-400/12 text-acid-400">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L4 14h6l-1 8l9-12h-6z"/></svg>
+        </span>
+        <h3 class="text-[21px] font-black text-zinc-50">Lo gestisci tu, ma non sei mai solo</h3>
+      </div>
+
+      <ul class="mt-7 space-y-5">
+        <li class="flex gap-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/15 text-[12px] font-black text-acid-400">✓</span>
+          <p class="text-[15.5px] leading-relaxed text-zinc-300">
+            <b class="font-bold text-zinc-50">Prezzi, orari, foto e avvisi li cambi tu</b> dal telefono quando serve,
+            senza chiedere il permesso a nessuno.
+          </p>
+        </li>
+        <li class="flex gap-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/15 text-[12px] font-black text-acid-400">✓</span>
+          <p class="text-[15.5px] leading-relaxed text-zinc-300">
+            <b class="font-bold text-zinc-50">Se qualcosa si blocca lo sistemiamo noi.</b> Se non hai tempo ci mandi
+            un messaggio e lo aggiorniamo al posto tuo.
+          </p>
+        </li>
+        <li class="flex gap-4">
+          <span class="mt-0.5 grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/15 text-[12px] font-black text-acid-400">✓</span>
+          <p class="text-[15.5px] leading-relaxed text-zinc-300">
+            <b class="font-bold text-zinc-50">Zero costi aggiuntivi</b> o ricarichi per ogni modifica tecnica.
+          </p>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHI SIAMO ============ -->
+<section id="team" class="border-y border-white/6 bg-white/[0.015] py-24">
+  <div class="mx-auto max-w-7xl px-5">
+    <div class="max-w-3xl">
+      <span class="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[.16em] text-iris-400">
+        <span class="h-px w-6 bg-gradient-to-r from-transparent to-iris-400"></span> Chi siamo
+      </span>
+      <h2 class="mt-4 text-[clamp(28px,4.4vw,42px)] font-black leading-[1.1]">Chi programma il tuo sito.</h2>
+      <p class="mt-5 text-[16.5px] leading-relaxed text-zinc-400">
+        Studiamo Informatica all'Università degli Studi di Bari Aldo Moro e scriviamo codice tutti i giorni. Ci siamo accorti di una realtà banale:
+        metà delle attività del nostro quartiere non ha un sito, l'altra metà ne ha uno fermo da anni con orari
+        sbagliati e contatti vecchi. Il motivo è sempre lo stesso: cifre da 2.000€ e mesi di attesa.
+        Noi non abbiamo uffici di lusso o venditori da pagare. Abbiamo competenze tecniche aggiornate e lavoriamo
+        direttamente con te.
+      </p>
+    </div>
+
+    <!-- schede generate da config.js -->
+    <div id="teamGrid" class="team-griglia mt-12"></div>
+  </div>
+</section>
+
+<!-- ============ PREZZI ============ -->
+<section id="prezzi" class="mx-auto max-w-7xl px-5 py-24">
+  <div class="max-w-3xl">
+    <span class="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[.16em] text-acid-400">
+      <span class="h-px w-6 bg-gradient-to-r from-transparent to-acid-400"></span> Prezzi trasparenti
+    </span>
+    <h2 class="mt-4 text-[clamp(28px,4.4vw,42px)] font-black leading-[1.1]">Un pagamento una tantum, più le spese annuali di dominio e server.</h2>
+    <p class="mt-4 text-[16.5px] leading-relaxed text-zinc-400">
+      Tutto scritto qui sotto, senza voci nascoste in fondo. Le spese annuali coprono dominio e infrastruttura,
+      quindi il sito resta veloce e raggiungibile tutto l'anno.
+    </p>
+  </div>
+
+  <div class="mt-12 grid items-stretch gap-5 lg:grid-cols-3">
+
+    <!-- FLASH -->
+    <article class="rise card-hover relative flex flex-col overflow-hidden rounded-3xl border border-white/8 bg-white/[0.025] p-7">
+      <h3 class="text-[21px] font-black text-zinc-50">Flash</h3>
+      <p class="mt-2 min-h-[42px] text-[13.5px] text-zinc-500">Per chi vuole esserci subito, bene e senza complicazioni.</p>
+      <div class="mt-5 flex items-baseline gap-2">
+        <b class="text-[42px] font-black leading-none text-zinc-50">69€</b>
+        <span class="text-[13px] font-semibold text-zinc-500">una tantum</span>
+      </div>
+      <div class="mt-4 rounded-2xl border border-dashed border-acid-400/30 bg-acid-400/[0.05] px-4 py-3">
+        <p class="text-[11px] font-black uppercase tracking-[.1em] text-acid-400">Spese annuali</p>
+        <p class="mt-1 text-[13px] leading-snug text-zinc-300"><b class="font-extrabold text-zinc-50">da 10 a 15€ all'anno</b> per dominio registrato e server veloce.</p>
+      </div>
+      <ul class="mt-6 space-y-2.5">
+        <li class="flex gap-2.5 text-[14px] text-zinc-400"><span class="font-black text-acid-400">✓</span> Pagina singola rapida</li>
+        <li class="flex gap-2.5 text-[14px] text-zinc-400"><span class="font-black text-acid-400">✓</span> Orari di apertura sempre in vista</li>
+        <li class="flex gap-2.5 text-[14px] text-zinc-400"><span class="font-black text-acid-400">✓</span> Indirizzo con mappa Google Maps</li>
+        <li class="flex gap-2.5 text-[14px] text-zinc-400"><span class="font-black text-acid-400">✓</span> Pulsante diretto WhatsApp</li>
+        <li class="flex gap-2.5 text-[14px] text-zinc-400"><span class="font-black text-acid-400">✓</span> Perfetta da telefono</li>
+      </ul>
+      <a data-wa href="#" target="_blank" rel="noopener"
+        class="mt-auto block rounded-full border border-white/12 bg-white/[0.05] px-5 py-3.5 pt-3.5 text-center text-[14.5px] font-bold text-zinc-100 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/10">
+        Voglio l'anteprima Flash
+      </a>
+    </article>
+
+    <!-- COMPLETO -->
+    <article class="rise card-hover relative flex flex-col overflow-hidden rounded-3xl border border-acid-400/40 bg-gradient-to-b from-acid-400/[0.09] to-acid-400/[0.015] p-7 shadow-[0_36px_90px_-40px_rgba(16,185,129,.65)]">
+      <span class="beam"></span>
+      <span class="absolute right-5 top-5 rounded-full bg-gradient-to-br from-acid-300 to-acid-500 px-3 py-1 text-[10.5px] font-black uppercase tracking-[.08em] text-ink-950">Il più scelto</span>
+      <h3 class="text-[21px] font-black text-zinc-50">Completo</h3>
+      <p class="mt-2 min-h-[42px] text-[13.5px] text-zinc-400">Per chi ha un menù, un listino o una galleria da mostrare e aggiornare.</p>
+      <div class="mt-5 flex items-baseline gap-2">
+        <b class="bg-gradient-to-br from-acid-300 to-acid-500 bg-clip-text text-[42px] font-black leading-none text-transparent">149€</b>
+        <span class="text-[13px] font-semibold text-zinc-400">una tantum</span>
+      </div>
+      <div class="mt-4 rounded-2xl border border-dashed border-acid-400/40 bg-acid-400/[0.08] px-4 py-3">
+        <p class="text-[11px] font-black uppercase tracking-[.1em] text-acid-400">Spese annuali</p>
+        <p class="mt-1 text-[13px] leading-snug text-zinc-300"><b class="font-extrabold text-zinc-50">da 15 a 25€ all'anno</b> per dominio, hosting gestito e aggiornamenti.</p>
+      </div>
+      <ul class="mt-6 space-y-2.5">
+        <li class="flex gap-2.5 text-[14px] text-zinc-300"><span class="font-black text-acid-400">✓</span> Tutte le sezioni necessarie alla tua attività</li>
+        <li class="flex gap-2.5 text-[14px] text-zinc-300"><span class="font-black text-acid-400">✓</span> Menù o listino prezzi modificabile da soli dal telefono</li>
+        <li class="flex gap-2.5 text-[14px] text-zinc-300"><span class="font-black text-acid-400">✓</span> Galleria foto</li>
+        <li class="flex gap-2.5 text-[14px] text-zinc-300"><span class="font-black text-acid-400">✓</span> Messaggi d'ordine o di contatto inviati direttamente su WhatsApp o via email</li>
+      </ul>
+      <a data-wa href="#" target="_blank" rel="noopener"
+        class="mt-auto block rounded-full bg-gradient-to-br from-acid-300 via-acid-400 to-acid-600 px-5 py-3.5 text-center text-[14.5px] font-black text-ink-950 shadow-[0_0_0_1px_rgba(52,211,153,.5),0_16px_40px_-14px_rgba(52,211,153,.9)] transition hover:-translate-y-0.5">
+        Voglio l'anteprima Completa
+      </a>
+    </article>
+
+    <!-- AVANZATO -->
+    <article class="rise card-hover relative flex flex-col overflow-hidden rounded-3xl border border-white/8 bg-white/[0.025] p-7">
+      <h3 class="text-[21px] font-black text-zinc-50">Avanzato</h3>
+      <p class="mt-2 min-h-[42px] text-[13.5px] text-zinc-500">Per esigenze dinamiche complesse, costruito su misura.</p>
+      <div class="mt-5 flex items-baseline gap-2">
+        <b class="text-[42px] font-black leading-none text-zinc-50">Su misura</b>
+      </div>
+      <p class="mt-1 text-[13px] font-semibold text-zinc-500">a partire da 299€ una tantum</p>
+      <div class="mt-4 rounded-2xl border border-dashed border-iris-400/30 bg-iris-400/[0.05] px-4 py-3">
+        <p class="text-[11px] font-black uppercase tracking-[.1em] text-iris-400">Spese annuali</p>
+        <p class="mt-1 text-[13px] leading-snug text-zinc-300"><b class="font-extrabold text-zinc-50">da 35 a 60€ all'anno</b> per server dedicato e database.</p>
+      </div>
+      <ul class="mt-6 space-y-2.5">
+        <li class="flex gap-2.5 text-[14px] text-zinc-400"><span class="font-black text-iris-400">✓</span> Funzionalità specifiche concordate insieme, ad esempio cataloghi estesi, aree riservate o logiche particolari</li>
+        <li class="flex gap-2.5 text-[14px] text-zinc-400"><span class="font-black text-iris-400">✓</span> Assistenza dedicata</li>
+      </ul>
+      <div class="mt-6 flex items-start gap-3 rounded-2xl border border-gold-400/35 bg-gold-400/[0.08] px-4 py-3">
+        <svg class="mt-0.5 h-4 w-4 flex-none text-gold-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        <p class="text-[12.5px] leading-snug text-zinc-200">
+          <b class="font-extrabold text-gold-400">Tempi di consegna.</b>
+          Questo piano può richiedere più di 5 giorni lavorativi, in base alla complessità di quello che serve.
+        </p>
+      </div>
+      <a data-wa href="#" target="_blank" rel="noopener"
+        class="mt-6 block rounded-full border border-white/12 bg-white/[0.05] px-5 py-3.5 text-center text-[14.5px] font-bold text-zinc-100 transition hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/10">
+        Parliamo del tuo caso
+      </a>
+    </article>
+  </div>
+
+  <!-- COME SI PAGA -->
+  <div class="rise mt-6 flex flex-col gap-6 overflow-hidden rounded-3xl border border-acid-400/30 bg-gradient-to-br from-acid-400/[0.1] via-acid-400/[0.03] to-volt-500/[0.07] p-8 shadow-[0_30px_80px_-44px_rgba(16,185,129,.7)] sm:flex-row sm:items-center sm:p-9">
+    <span class="grid h-14 w-14 flex-none place-items-center rounded-2xl border border-acid-400/40 bg-acid-400/15 text-acid-400">
+      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.3-2.9 7.8-7 9.5c-4.1-1.7-7-5.2-7-9.5V6z"/><path d="M9 12l2.2 2.2L15.5 10"/></svg>
+    </span>
+    <div>
+      <h3 class="text-[20px] font-black text-zinc-50">Come si paga</h3>
+      <p class="mt-2 text-[15px] leading-relaxed text-zinc-300">
+        Prima creiamo l'anteprima gratuita del tuo sito e te la mostriamo su WhatsApp, funzionante e senza impegno.
+      </p>
+      <p class="mt-2 text-[15px] font-bold leading-relaxed text-acid-300">
+        Se ti piace andiamo online, altrimenti non ci devi assolutamente nulla.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="border-y border-white/6 bg-white/[0.015] py-24">
+  <div class="mx-auto max-w-7xl px-5">
+    <div class="max-w-3xl">
+      <span class="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[.16em] text-volt-400">
+        <span class="h-px w-6 bg-gradient-to-r from-transparent to-volt-400"></span> FAQ
+      </span>
+      <h2 class="mt-4 text-[clamp(28px,4.4vw,42px)] font-black leading-[1.1]">Domande frequenti</h2>
+    </div>
+
+    <div class="mt-10 grid max-w-4xl gap-3">
+      <details class="q rounded-2xl border border-white/8 bg-white/[0.025] transition open:border-acid-400/30 open:bg-acid-400/[0.05]">
+        <summary class="flex items-center gap-4 px-5 py-4 text-[15px] font-bold text-zinc-100">
+          In quanto tempo il sito è online?
+          <span class="plus ml-auto text-[20px] font-normal text-acid-400">+</span>
+        </summary>
+        <div class="px-5 pb-4 text-[14.5px] leading-relaxed text-zinc-400">
+          Tra 1 e 5 giorni. L'anteprima arriva in genere entro il primo o il secondo giorno, poi servono le tue correzioni.
+          Se i contenuti sono già pronti si chiude anche in ventiquattro ore.
+        </div>
+      </details>
+
+      <details class="q rounded-2xl border border-white/8 bg-white/[0.025] transition open:border-acid-400/30 open:bg-acid-400/[0.05]">
+        <summary class="flex items-center gap-4 px-5 py-4 text-[15px] font-bold text-zinc-100">
+          Devo pagare qualcosa per vedere l'anteprima?
+          <span class="plus ml-auto text-[20px] font-normal text-acid-400">+</span>
+        </summary>
+        <div class="px-5 pb-4 text-[14.5px] leading-relaxed text-zinc-400">
+          No, zero. Costruiamo la prima versione a nostre spese e te la mandiamo su WhatsApp già funzionante.
+          Se non ti convince ci siamo fatti due chiacchiere e finisce lì.
+        </div>
+      </details>
+
+      <details class="q rounded-2xl border border-white/8 bg-white/[0.025] transition open:border-acid-400/30 open:bg-acid-400/[0.05]">
+        <summary class="flex items-center gap-4 px-5 py-4 text-[15px] font-bold text-zinc-100">
+          Da dove prendete testi e foto per l'anteprima?
+          <span class="plus ml-auto text-[20px] font-normal text-acid-400">+</span>
+        </summary>
+        <div class="px-5 pb-4 text-[14.5px] leading-relaxed text-zinc-400">
+          Dai contenuti che hai già reso pubblici sui tuoi canali social e sul profilo Google dell'attività.
+          Sono materiali tuoi, li usiamo solo per mostrarti come starebbe il tuo sito. Se decidi di non proseguire, li eliminiamo.
+        </div>
+      </details>
+
+      <details class="q rounded-2xl border border-white/8 bg-white/[0.025] transition open:border-acid-400/30 open:bg-acid-400/[0.05]">
+        <summary class="flex items-center gap-4 px-5 py-4 text-[15px] font-bold text-zinc-100">
+          Perché costa così poco rispetto a un'agenzia?
+          <span class="plus ml-auto text-[20px] font-normal text-acid-400">+</span>
+        </summary>
+        <div class="px-5 pb-4 text-[14.5px] leading-relaxed text-zinc-400">
+          Perché paghi il lavoro e non la struttura. Non abbiamo uffici in centro, commerciali a provvigione o passaggi
+          intermedi. Scriviamo il codice noi, direttamente, e questo taglia quasi tutto il costo.
+        </div>
+      </details>
+
+      <details class="q rounded-2xl border border-white/8 bg-white/[0.025] transition open:border-acid-400/30 open:bg-acid-400/[0.05]">
+        <summary class="flex items-center gap-4 px-5 py-4 text-[15px] font-bold text-zinc-100">
+          Quali sono le spese annuali?
+          <span class="plus ml-auto text-[20px] font-normal text-acid-400">+</span>
+        </summary>
+        <div class="px-5 pb-4 text-[14.5px] leading-relaxed text-zinc-400">
+          Sono le spese tecniche per tenere il sito raggiungibile, cioè dominio e server.
+          Vanno da 10 a 15€ all'anno con il piano Flash, da 15 a 25€ con il Completo,
+          da 35 a 60€ con il piano su misura, che ha server dedicato e database.
+        </div>
+      </details>
+
+      <details class="q rounded-2xl border border-white/8 bg-white/[0.025] transition open:border-acid-400/30 open:bg-acid-400/[0.05]">
+        <summary class="flex items-center gap-4 px-5 py-4 text-[15px] font-bold text-zinc-100">
+          Non sono pratico di computer, riesco ad aggiornarlo?
+          <span class="plus ml-auto text-[20px] font-normal text-acid-400">+</span>
+        </summary>
+        <div class="px-5 pb-4 text-[14.5px] leading-relaxed text-zinc-400">
+          Sì. Il pannello funziona come una chat: apri, scrivi e salvi. Ti mostriamo tutto dal vivo alla consegna in dieci minuti.
+          E se un giorno non hai tempo, ci mandi un messaggio e lo aggiorniamo noi senza costi.
+        </div>
+      </details>
+
+      <details class="q rounded-2xl border border-white/8 bg-white/[0.025] transition open:border-acid-400/30 open:bg-acid-400/[0.05]">
+        <summary class="flex items-center gap-4 px-5 py-4 text-[15px] font-bold text-zinc-100">
+          A chi viene intestato il dominio?
+          <span class="plus ml-auto text-[20px] font-normal text-acid-400">+</span>
+        </summary>
+        <div class="px-5 pb-4 text-[14.5px] leading-relaxed text-zinc-400">
+          Decidi tu, e te lo diciamo con totale trasparenza.
+          <br><br>
+          <b class="font-bold text-zinc-100">Prima strada, tutto intestato alla tua attività.</b>
+          Registriamo dominio e server insieme, con la tua carta e i tuoi dati aziendali.
+          Così ricevi la fattura deducibile direttamente dal fornitore del dominio e dell'hosting,
+          e ogni cosa risulta a nome tuo.
+          <br><br>
+          <b class="font-bold text-zinc-100">Seconda strada, zero seccature amministrative.</b>
+          Gestiamo noi il rinnovo tecnico e tu ci corrispondi solo la piccola quota annuale concordata,
+          quella che trovi nel listino qui sopra.
+        </div>
+      </details>
+
+      <details class="q rounded-2xl border border-white/8 bg-white/[0.025] transition open:border-acid-400/30 open:bg-acid-400/[0.05]">
+        <summary class="flex items-center gap-4 px-5 py-4 text-[15px] font-bold text-zinc-100">
+          Il sito è mio oppure resta vostro?
+          <span class="plus ml-auto text-[20px] font-normal text-acid-400">+</span>
+        </summary>
+        <div class="px-5 pb-4 text-[14.5px] leading-relaxed text-zinc-400">
+          Il lavoro è tuo al 100%, file consegnati e nessun vincolo. Se hai scelto di intestare dominio e account
+          a te, sei già completamente autonomo. Se invece li gestiamo noi, basta una richiesta e li trasferiamo
+          a tuo nome senza costi e senza discussioni.
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTATTI ============ -->
+<section id="contatti" class="mx-auto max-w-7xl px-5 py-24">
+  <div class="max-w-3xl">
+    <span class="inline-flex items-center gap-2 text-[12px] font-black uppercase tracking-[.16em] text-acid-400">
+      <span class="h-px w-6 bg-gradient-to-r from-transparent to-acid-400"></span> Contatti
+    </span>
+    <h2 class="mt-4 text-[clamp(28px,4.4vw,42px)] font-black leading-[1.1]">Raccontaci l'attività. All'anteprima pensiamo noi.</h2>
+    <p class="mt-4 text-[16.5px] leading-relaxed text-zinc-400">
+      Scrivici il nome dell'attività e il link della pagina social. Ti rimandiamo il sito già costruito,
+      senza impegno e senza telefonate insistenti.
+    </p>
+  </div>
+
+  <div class="mt-10 grid gap-5 lg:grid-cols-2">
+    <div class="rise rounded-3xl border border-white/8 bg-white/[0.025] p-7">
+      <h3 class="text-[17px] font-extrabold text-zinc-50">Scrivici dove preferisci</h3>
+
+      <a data-wa href="#" target="_blank" rel="noopener"
+        class="mt-4 flex items-center gap-4 rounded-2xl border border-acid-400/25 bg-acid-400/[0.07] p-4 transition hover:-translate-y-0.5 hover:border-acid-400/55 hover:bg-acid-400/[0.13]">
+        <span class="grid h-11 w-11 flex-none place-items-center rounded-xl border border-acid-400/30 bg-acid-400/12 text-acid-400">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91C21.96 6.45 17.5 2 12.04 2m5.8 14.16c-.24.68-1.42 1.31-1.96 1.36c-.5.05-.98.24-3.32-.69c-2.79-1.1-4.56-3.95-4.7-4.13c-.14-.18-1.13-1.5-1.13-2.87s.72-2.04.97-2.32c.25-.28.55-.35.73-.35c.18 0 .37 0 .53.01c.17.01.4-.06.63.48c.24.55.8 1.92.87 2.06c.07.14.12.3.02.48c-.09.18-.14.29-.28.45c-.14.16-.29.36-.42.48c-.14.14-.28.29-.12.57c.16.28.72 1.18 1.54 1.91c1.06.94 1.95 1.23 2.23 1.37c.28.14.44.12.6-.07c.16-.19.69-.8.87-1.08c.18-.28.37-.23.62-.14c.25.09 1.61.76 1.89.9c.28.14.46.21.53.32c.07.12.07.66-.17 1.34"/></svg>
+        </span>
+        <span>
+          <b class="block text-[14.5px] font-bold text-zinc-50">WhatsApp, il modo più veloce</b>
+          <small class="text-[12.5px] text-zinc-500" data-phone-text>+39 340 000 0000</small>
+        </span>
+      </a>
+
+      <a data-mail href="#"
+        class="mt-3 flex items-center gap-4 rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06]">
+        <span class="grid h-11 w-11 flex-none place-items-center rounded-xl border border-white/10 bg-white/5 text-zinc-300">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg>
+        </span>
+        <span><b class="block text-[14.5px] font-bold text-zinc-50">Email</b><small class="text-[12.5px] text-zinc-500" data-mail-text>ciao@webora.it</small></span>
+      </a>
+
+      <a data-tel href="#"
+        class="mt-3 flex items-center gap-4 rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.06]">
+        <span class="grid h-11 w-11 flex-none place-items-center rounded-xl border border-white/10 bg-white/5 text-zinc-300">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5l-2.5 1.5a12 12 0 0 0 5 5L15 13l5 2v4a1 1 0 0 1-1 1A16 16 0 0 1 4 5a1 1 0 0 1 1-1"/></svg>
+        </span>
+        <span><b class="block text-[14.5px] font-bold text-zinc-50">Telefono</b><small class="text-[12.5px] text-zinc-500">Se preferisci sentirci a voce</small></span>
+      </a>
+    </div>
+
+    <div class="rise rounded-3xl border border-white/8 bg-white/[0.025] p-7">
+      <h3 class="text-[17px] font-extrabold text-zinc-50">Cosa ci serve per partire</h3>
+      <ul class="mt-5 space-y-3">
+        <li class="flex gap-3 text-[14.5px] text-zinc-400"><span class="grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/15 text-[12px] font-black text-acid-400">1</span> Il nome dell'attività e l'indirizzo</li>
+        <li class="flex gap-3 text-[14.5px] text-zinc-400"><span class="grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/15 text-[12px] font-black text-acid-400">2</span> Il nome della pagina Facebook e/o Instagram</li>
+        <li class="flex gap-3 text-[14.5px] text-zinc-400"><span class="grid h-6 w-6 flex-none place-items-center rounded-lg bg-acid-400/15 text-[12px] font-black text-acid-400">3</span> Una riga su cosa vuoi mettere in evidenza, ad esempio l'interno del locale, le prenotazioni, gli orari oppure i piatti</li>
+      </ul>
+      <div class="mt-6 rounded-2xl border border-dashed border-acid-400/30 bg-acid-400/[0.05] px-4 py-3 text-[13px] leading-relaxed text-zinc-300">
+        Con questo ci bastano poche ore per costruire la prima anteprima. Non ti chiediamo altro, e soprattutto non ti chiediamo soldi.
+      </div>
+      <a data-wa href="#" target="_blank" rel="noopener"
+        class="mt-5 block rounded-full bg-gradient-to-br from-acid-300 via-acid-400 to-acid-600 px-5 py-3.5 text-center text-[14.5px] font-black text-ink-950 shadow-[0_0_0_1px_rgba(52,211,153,.5),0_16px_40px_-14px_rgba(52,211,153,.9)] transition hover:-translate-y-0.5">
+        Contattaci su WhatsApp
+      </a>
+      <p class="mt-3 text-[12px] text-zinc-500">Trattiamo i dati solo per risponderti. Dettagli nell'informativa privacy.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-white/8 bg-white/[0.012] py-12">
+  <div class="mx-auto max-w-7xl px-5">
+    <div class="flex flex-wrap items-start justify-between gap-8">
+      <div>
+        <a href="#top" class="flex items-center gap-2.5 text-[19px] font-black tracking-tight">
+          <span class="grid h-9 w-9 flex-none place-items-center rounded-[11px] bg-gradient-to-br from-white to-zinc-100 shadow-[0_0_24px_-6px_rgba(52,211,153,.6),inset_0_1px_0_rgba(255,255,255,.95)]">
+          <svg viewBox="10 9.5 44 44" class="h-6 w-6" fill="none" aria-hidden="true">
+            <path d="M17 24 L25 43" stroke="#059669" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M47 24 L39 43" stroke="#059669" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M25 43 L32 35 L39 43" stroke="#059669" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <polygon points="32,20 38,26 32,32 26,26" fill="#34d399" stroke="#059669" stroke-width="2.5" stroke-linejoin="round"/>
+          </svg>
+        </span>
+          <span>Web<span class="bg-gradient-to-r from-acid-300 via-volt-300 to-iris-400 bg-clip-text text-transparent">Ora</span></span>
+        </a>
+        <p class="mt-3 max-w-[46ch] text-[13.5px] text-zinc-500">
+          Siti veri per attività locali. Prima li vedi finiti, poi decidi.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-3 text-[13.5px] text-zinc-400">
+        <a href="#confronto" class="transition hover:text-acid-400">Confronto</a>
+        <a href="#demo" class="transition hover:text-acid-400">Esempi</a>
+        <a href="#prezzi" class="transition hover:text-acid-400">Prezzi</a>
+        <a href="#faq" class="transition hover:text-acid-400">FAQ</a>
+        <a href="#contatti" class="transition hover:text-acid-400">Contatti</a>
+        <button type="button" data-privacy
+          class="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[13px] font-semibold text-zinc-300 transition hover:border-acid-400/40 hover:bg-acid-400/10 hover:text-acid-300">
+          <svg class="h-[14px] w-[14px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.3-2.9 7.8-7 9.5c-4.1-1.7-7-5.2-7-9.5V6z"/></svg>
+          Note legali
+        </button>
+      </div>
+    </div>
+
+    <p class="mt-9 border-t border-white/8 pt-6 text-[12.5px] text-zinc-600">
+      <span data-brand>WebOra</span>. Progetto informatico per il supporto alle attività locali di quartiere.
+      Tutti i diritti riservati.
+    </p>
+  </div>
+</footer>
+
+<!-- ============ BARRA MOBILE ============ -->
+<div class="fixed inset-x-0 bottom-0 z-40 flex gap-2.5 border-t border-white/8 bg-ink-950/90 px-4 pb-[calc(11px+env(safe-area-inset-bottom))] pt-3 backdrop-blur-xl sm:hidden">
+  <a data-tel href="#" class="flex-1 rounded-full border border-acid-400/35 bg-acid-400/10 py-3 text-center text-[14px] font-bold text-acid-300">Chiama</a>
+  <a data-wa href="#" target="_blank" rel="noopener" class="flex-[1.6] rounded-full bg-gradient-to-br from-acid-300 to-acid-500 py-3 text-center text-[14px] font-black text-ink-950">Anteprima gratuita</a>
+</div>
+<div class="h-20 sm:hidden" aria-hidden="true"></div>
+
+<!-- ============ CASSETTO NOTE LEGALI ============ -->
+<div id="privacyModal" class="fixed inset-0 z-[90] hidden items-end justify-center sm:items-center" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+  <div class="absolute inset-0 bg-ink-950/75 backdrop-blur-sm" data-close></div>
+  <div class="relative flex max-h-[86vh] w-full max-w-xl flex-col overflow-hidden rounded-t-3xl border border-white/20 bg-[#0d0d14] shadow-[0_-30px_90px_-24px_rgba(0,0,0,1),0_0_0_1px_rgba(52,211,153,.12)] sm:rounded-3xl">
+    <div class="flex items-center gap-3 border-b border-white/10 px-6 py-5">
+      <span class="grid h-9 w-9 place-items-center rounded-xl border border-acid-400/30 bg-acid-400/12 text-acid-400">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5.5c0 4.3-2.9 7.8-7 9.5c-4.1-1.7-7-5.2-7-9.5V6z"/></svg>
+      </span>
+      <h3 id="privacyTitle" class="text-[18px] font-extrabold text-zinc-50">Note legali e privacy</h3>
+      <button data-close aria-label="Chiudi le note legali"
+        class="ml-auto grid h-9 w-9 place-items-center rounded-full border border-white/10 text-zinc-400 transition hover:border-white/25 hover:bg-white/5 hover:text-zinc-100">
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+
+    <div class="overflow-y-auto px-6 py-6 text-[14.5px] leading-relaxed text-zinc-400">
+      <p>
+        I dati di contatto che ci mandi su WhatsApp o per email, ad esempio nome, numero, indirizzo
+        e materiali della tua attività, li usiamo solo per lavorare al tuo sito.
+        <b class="font-bold text-zinc-100">Non vengono mai ceduti a terzi</b> e non finiscono in nessuna lista.
+      </p>
+      <p class="mt-4">
+        Se decidi di non proseguire, cancelliamo tutto quello che ci hai mandato.
+        Puoi chiederci in qualsiasi momento di correggere o eliminare i tuoi dati scrivendo a
+        <a data-mail class="font-semibold text-acid-400 underline decoration-acid-400/40 underline-offset-4" href="#">ciao@webora.it</a>.
+      </p>
+      <p class="mt-4">
+        Questa pagina non usa strumenti di tracciamento pubblicitario e non profila chi la visita.
+        Caratteri tipografici e libreria di stile arrivano da servizi esterni, che ricevono solo i dati
+        tecnici necessari a servire il file.
+      </p>
+      <p class="mt-4 text-[13px] text-zinc-600">
+        <span data-brand>WebOra</span>, progetto informatico con base a <span data-city>Bari</span>.
+        Nomi, recapiti ed esempi mostrati in pagina sono dimostrativi.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* =====================================================================
+     CONFIGURAZIONE. Ogni recapito e ogni profilo arrivano da config.js,
+     nel markup non c'è nessun dato cablato.
+     ===================================================================== */
+  var CFG = window.WEBORA_CONFIG || {};
+  var num = String(CFG.whatsappNumber || '').replace(/\D/g, '');
+
+  function numeroLeggibile(n){
+    if (n.length < 8) return n ? '+' + n : '';
+    var prefisso = n.slice(0, 2), resto = n.slice(2);
+    return '+' + prefisso + ' ' + resto.slice(0, 3) + ' ' + resto.slice(3, 6) + ' ' + resto.slice(6);
+  }
+
+  function riempi(sel, azione){
+    Array.prototype.forEach.call(document.querySelectorAll(sel), azione);
+  }
+
+  if (num){
+    riempi('[data-wa]',  function(el){ el.href = 'https://wa.me/' + num; });
+    riempi('[data-tel]', function(el){ el.href = 'tel:+' + num; });
+    riempi('[data-phone-text]', function(el){ el.textContent = numeroLeggibile(num); });
+  }
+  if (CFG.email){
+    riempi('[data-mail]', function(el){ el.href = 'mailto:' + CFG.email; });
+    riempi('[data-mail-text]', function(el){ el.textContent = CFG.email; });
+  }
+  if (CFG.brandName) riempi('[data-brand]', function(el){ el.textContent = CFG.brandName; });
+  if (CFG.legalCity) riempi('[data-city]',  function(el){ el.textContent = CFG.legalCity; });
+
+  /* schede del team, costruite dall'array in configurazione */
+  var teamGrid = document.getElementById('teamGrid');
+  if (teamGrid && Array.isArray(CFG.team)){
+    var LOGO = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
+      + '<path d="M4.98 3.5a2.5 2.5 0 1 1 0 5a2.5 2.5 0 0 1 0-5M3 9h4v12H3zm7 0h3.8v1.7h.05c.53-.95 1.83-1.95 3.77-1.95c4.03 0 4.78 2.5 4.78 5.76V21h-4v-5.6c0-1.34-.03-3.06-1.9-3.06c-1.9 0-2.2 1.45-2.2 2.96V21h-4z"/></svg>';
+
+    CFG.team.forEach(function(p){
+      var art = document.createElement('article');
+      art.className = 'tm tm-' + (p.accent || 'acid') + ' rise';
+
+      var beam = document.createElement('span'); beam.className = 'beam';
+      var av = document.createElement('span'); av.className = 'tm-av';
+      av.textContent = (p.name || '?').charAt(0).toUpperCase();
+      var h3 = document.createElement('h3'); h3.textContent = p.name || '';
+      var ruolo = document.createElement('p'); ruolo.className = 'tm-role'; ruolo.textContent = p.role || '';
+
+      art.appendChild(beam); art.appendChild(av); art.appendChild(h3); art.appendChild(ruolo);
+
+      if (p.linkedin){
+        var a = document.createElement('a');
+        a.className = 'tm-link';
+        a.href = p.linkedin;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.innerHTML = LOGO + ' LinkedIn';
+        art.appendChild(a);
+      }
+      teamGrid.appendChild(art);
+    });
+  }
+
+  /* ===== anno ===== */
+  var anno = document.getElementById('anno');
+  if (anno) anno.textContent = new Date().getFullYear();
+
+  /* ===== header ===== */
+  var hdr = document.getElementById('hdr');
+  var onScroll = function(){
+    hdr.classList.toggle('hdr-stuck', window.scrollY > 8);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, {passive:true});
+
+  /* ===== menu a tendina ===== */
+  var dd = document.getElementById('dd'), ddBtn = document.getElementById('ddBtn');
+  var setDd = function(open){
+    dd.dataset.open = open ? 'true' : 'false';
+    ddBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  };
+  ddBtn.addEventListener('click', function(e){ e.stopPropagation(); setDd(dd.dataset.open !== 'true'); });
+  document.addEventListener('click', function(e){ if (!dd.contains(e.target)) setDd(false); });
+  dd.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ setDd(false); }); });
+
+  /* ===== modale privacy ===== */
+  var modal = document.getElementById('privacyModal'), lastFocus = null;
+  var openModal = function(){
+    lastFocus = document.activeElement;
+    modal.classList.remove('hidden'); modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+    var x = modal.querySelector('[data-close][aria-label]');
+    if (x) x.focus();
+  };
+  var closeModal = function(){
+    modal.classList.add('hidden'); modal.classList.remove('flex');
+    document.body.style.overflow = '';
+    if (lastFocus) lastFocus.focus();
+  };
+  document.querySelectorAll('[data-privacy]').forEach(function(el){
+    el.addEventListener('click', function(e){ e.preventDefault(); openModal(); });
+  });
+  modal.querySelectorAll('[data-close]').forEach(function(el){ el.addEventListener('click', closeModal); });
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    setDd(false);
+    if (!modal.classList.contains('hidden')) closeModal();
+  });
+  if (location.hash === '#privacy') openModal();
+
+  /* ================= VETRINA, ELENCO E ANTEPRIMA ================= */
+  var righe = Array.prototype.slice.call(document.querySelectorAll('.ex-row'));
+  var pills = Array.prototype.slice.call(document.querySelectorAll('.pill'));
+  var schermo = document.getElementById('exSchermo');
+  var scHero = document.getElementById('scHero'), scTex = document.getElementById('scTex');
+  var scNome = document.getElementById('scNome'), scSub = document.getElementById('scSub');
+  var scUrl  = document.getElementById('scUrl'),  scTag = document.getElementById('scTag');
+  var scTitolo = document.getElementById('scTitolo'), scDesc = document.getElementById('scDesc');
+
+  function mostra(riga){
+    if (!riga) return;
+    righe.forEach(function(r){ r.removeAttribute('aria-current'); });
+    riga.setAttribute('aria-current','true');
+
+    var d = riga.dataset;
+    scHero.style.background = d.grad;
+    scTex.style.backgroundImage = d.tex;
+    scNome.textContent = d.nome;
+    scSub.textContent = d.sub;
+    scUrl.textContent = d.url;
+    scTitolo.textContent = d.titolo;
+    scDesc.textContent = d.desc;
+    scTag.textContent = d.tag;
+    scTag.className = 'ex-tag t-' + d.cat;
+
+    schermo.classList.remove('sc-cambio');
+    void schermo.offsetWidth;
+    schermo.classList.add('sc-cambio');
+  }
+
+  righe.forEach(function(r){
+    r.addEventListener('click', function(){ mostra(r); });
+    r.addEventListener('mouseenter', function(){ if (window.innerWidth >= 1024) mostra(r); });
+  });
+
+  pills.forEach(function(p){
+    p.addEventListener('click', function(){
+      pills.forEach(function(o){ o.setAttribute('aria-pressed','false'); });
+      p.setAttribute('aria-pressed','true');
+      var f = p.dataset.filter, primo = null;
+      righe.forEach(function(r){
+        var dentro = (f === 'all' || r.dataset.cat === f);
+        r.hidden = !dentro;
+        if (dentro && !primo) primo = r;
+      });
+      mostra(primo);
+    });
+  });
+
+  /* ================= SIMULAZIONE PANNELLO ================= */
+  var v1 = document.getElementById('v1'), v2 = document.getElementById('v2'), v3 = document.getElementById('v3');
+  var f1 = document.getElementById('f1'), f2 = document.getElementById('f2'), f3 = document.getElementById('f3');
+  var c1 = document.getElementById('c1'), c2 = document.getElementById('c2');
+  var sw3 = document.getElementById('sw3'), saveBtn = document.getElementById('saveBtn');
+  var scrState = document.getElementById('scrState'), timer = document.getElementById('timer');
+
+  var wait = function(ms){ return new Promise(function(r){ setTimeout(r, ms); }); };
+  var hot = function(el, on){ el.classList.toggle('hot', on); };
+
+  /* pallino dello switch, costruito qui per tenere il markup pulito */
+  var knob = document.createElement('span');
+  knob.className = 'knob';
+  sw3.appendChild(knob);
+
+  function tick(s){
+    setInterval(function(){
+      s = (s + 1) % 60;
+      timer.textContent = '00:' + (s < 10 ? '0' + s : s);
+    }, 1000);
+  }
+
+  async function type(el, text, caret){
+    caret.hidden = false;
+    el.textContent = '';
+    for (var i = 0; i < text.length; i++){
+      el.textContent += text[i];
+      await wait(70);
+    }
+    await wait(320);
+    caret.hidden = true;
+  }
+
+  async function ciclo(){
+    while (true){
+      hot(f1, true);  await type(v1, '7,00 €', c1); hot(f1, false); await wait(400);
+      hot(f2, true);  await type(v2, '23:30', c2);  hot(f2, false); await wait(400);
+
+      hot(f3, true);
+      sw3.classList.add('on');
+      v3.textContent = 'Attiva';
+      await wait(700); hot(f3, false); await wait(400);
+
+      saveBtn.textContent = 'Pubblicato ✓';
+      scrState.textContent = 'ONLINE';
+      await wait(2600);
+
+      saveBtn.textContent = 'Salva e pubblica';
+      scrState.textContent = 'MODIFICA';
+      v1.textContent = '6,50 €'; v2.textContent = '23:00'; v3.textContent = 'Non attiva';
+      sw3.classList.remove('on');
+      await wait(1200);
+    }
+  }
+
+  if (!reduce && 'IntersectionObserver' in window){
+    var started = false;
+    var phoneObs = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting && !started){
+          started = true; tick(41); ciclo(); phoneObs.disconnect();
+        }
+      });
+    }, {threshold:0.3});
+    phoneObs.observe(timer.parentElement);
+  }
+
+  /* ================= COMPARSA PROGRESSIVA ================= */
+  var risers = document.querySelectorAll('.rise');
+  if ('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if (en.isIntersecting){ en.target.classList.add('on'); io.unobserve(en.target); }
+      });
+    }, {threshold:0.1, rootMargin:'0px 0px -40px 0px'});
+    risers.forEach(function(el, i){
+      el.style.transitionDelay = (Math.min(i % 4, 3) * 70) + 'ms';
+      io.observe(el);
+    });
+  } else {
+    risers.forEach(function(el){ el.classList.add('on'); });
+  }
+  setTimeout(function(){ risers.forEach(function(el){ el.classList.add('on'); }); }, 2800);
+})();
+</script>
+
+</body>
+</html>

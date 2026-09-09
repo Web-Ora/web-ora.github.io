@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebOra . Vetrina, pannelli espandibili</title>
+<meta name="theme-color" content="#08080b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:#08080b;color:#e4e4ec;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;letter-spacing:-.011em;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+h1,h2,h3{margin:0;letter-spacing:-.035em;line-height:1.1}
+p{margin:0}
+.sfondo{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.sfondo::before{content:'';position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:58px 58px;
+  -webkit-mask-image:radial-gradient(120% 80% at 50% 0%,#000 10%,transparent 72%);
+  mask-image:radial-gradient(120% 80% at 50% 0%,#000 10%,transparent 72%)}
+.alone{position:absolute;border-radius:50%;filter:blur(110px);opacity:.22}
+.a1{width:520px;height:520px;top:-220px;left:-120px;background:#10b981}
+.a2{width:480px;height:480px;top:-160px;right:-140px;background:#3b82f6}
+.wrap{max-width:1180px;margin:0 auto;padding:64px 20px 80px}
+.occhiello{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:#60a5fa}
+.occhiello::before{content:'';width:24px;height:1px;background:linear-gradient(90deg,transparent,#60a5fa)}
+h2.titolo{margin-top:16px;font-size:clamp(28px,4.4vw,42px);font-weight:900}
+.lede{margin-top:14px;max-width:62ch;font-size:16.5px;line-height:1.6;color:#9a9aa8}
+.pillole{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.pill{padding:8px 15px;border-radius:10px;font-size:13px;font-weight:700;color:#a1a1ad;
+  border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035);transition:.25s}
+.pill:hover{color:#e9e9f0;border-color:rgba(255,255,255,.2);transform:translateY(-1px)}
+.pill[aria-pressed="true"]{color:#06120e;border-color:transparent;
+  background:linear-gradient(135deg,#6ee7b7,#10b981);box-shadow:0 8px 24px -10px rgba(16,185,129,.85)}
+.tag{display:inline-block;padding:4px 10px;border-radius:999px;font-size:10px;font-weight:900;
+  letter-spacing:.1em;text-transform:uppercase;border:1px solid;background:rgba(255,255,255,.04)}
+.t-food{color:#fbbf24;border-color:rgba(251,191,36,.45)}
+.t-beauty{color:#c4b5fd;border-color:rgba(167,139,250,.45)}
+.t-sport{color:#6ee7b7;border-color:rgba(52,211,153,.45)}
+.t-shop{color:#93c5fd;border-color:rgba(96,165,250,.45)}
+.nota{margin-top:44px;padding-top:22px;border-top:1px solid rgba(255,255,255,.08);
+  font-size:12.5px;color:#6f6f80}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+
+.pannelli{display:flex;gap:12px;margin-top:28px;height:400px}
+.pan{position:relative;flex:1 1 0;min-width:0;border-radius:22px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.09);cursor:pointer;
+  transition:flex-grow .55s cubic-bezier(.22,.8,.24,1),border-color .45s,box-shadow .45s}
+.pan[hidden]{display:none}
+.pan span.tex{position:absolute;inset:0;opacity:.18}
+.pan::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(6,6,10,.05) 30%,rgba(6,6,10,.88))}
+.pan[aria-expanded="true"]{flex-grow:4.4;border-color:rgba(52,211,153,.5);
+  box-shadow:0 0 0 1px rgba(52,211,153,.22),0 34px 80px -34px rgba(16,185,129,.7)}
+.pan-chiuso{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:16px 12px;
+  display:flex;justify-content:center;transition:opacity .35s}
+.pan-chiuso b{font-size:13px;font-weight:800;color:#fff;white-space:nowrap;
+  writing-mode:vertical-rl;transform:rotate(180deg);text-shadow:0 2px 10px rgba(0,0,0,.7)}
+.pan[aria-expanded="true"] .pan-chiuso{opacity:0}
+.pan-aperto{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:22px;opacity:0;
+  transform:translateY(10px);transition:opacity .45s .12s,transform .45s .12s;pointer-events:none}
+.pan[aria-expanded="true"] .pan-aperto{opacity:1;transform:none}
+.pan-aperto h3{margin-top:10px;font-size:21px;font-weight:900;color:#fff}
+.pan-aperto p{margin-top:7px;max-width:44ch;font-size:13.5px;line-height:1.5;color:rgba(255,255,255,.78)}
+.pan-aperto .sotto{margin-top:3px;font-size:12px;font-weight:600;color:rgba(255,255,255,.66)}
+@media (max-width:900px){
+  .pannelli{flex-direction:column;height:auto}
+  .pan{height:96px;flex:none;transition:height .5s cubic-bezier(.22,.8,.24,1),border-color .45s}
+  .pan[aria-expanded="true"]{height:260px}
+  .pan-chiuso{justify-content:flex-start;padding:18px}
+  .pan-chiuso b{writing-mode:horizontal-tb;transform:none;font-size:15px}
+}
+</style>
+</head>
+<body>
+<div class="sfondo"><span class="alone a1"></span><span class="alone a2"></span></div>
+
+<main class="wrap">
+  <span class="occhiello">Vetrina esempi</span>
+  <h2 class="titolo">Come diventa la tua attività.</h2>
+  <p class="lede">Pannelli affiancati che si aprono al passaggio del mouse o al tocco. Occupano poca altezza e restano vivi.</p>
+    <div class="pillole" role="group" aria-label="Filtra gli esempi per categoria">
+      <button type="button" class="pill" aria-pressed="true"  data-filter="all">Tutte</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="food">Ristorazione</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="beauty">Barber e bellezza</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="sport">Sport e fitness</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="shop">Negozi locali</button>
+    </div>
+
+    <div class="pannelli">
+      <div class="pan" data-cat="food" role="button" tabindex="0" aria-expanded="true"
+        style="background:linear-gradient(140deg,#2a1410,#8f2f22 55%,#e0642f)">
+        <span class="tex" style="background-image:radial-gradient(rgba(255,255,255,.9) 1.1px,transparent 1.1px);background-size:13px 13px"></span>
+        <div class="pan-chiuso"><b>Pizzeria da Nino</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-food">Ristorazione</span>
+          <h3>Da Nino</h3>
+          <p class="sotto">Pizzeria e forno a legna</p>
+          <p>Menù sempre aggiornato, orari del forno e ordine su WhatsApp in due tocchi.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="beauty" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#101014,#33343d 52%,#8b8f9e)">
+        <span class="tex" style="background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.8) 0 1px,transparent 1px 9px)"></span>
+        <div class="pan-chiuso"><b>Barbiere Sala 12</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-beauty">Barber e bellezza</span>
+          <h3>Sala 12</h3>
+          <p class="sotto">Barber shop dal 1998</p>
+          <p>Listino tagli, foto dei lavori e prenotazione rapida dallo smartphone.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="sport" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#1a1206,#6b4408 55%,#f2a72c)">
+        <span class="tex" style="background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.7) 0 1px,transparent 1px 10px)"></span>
+        <div class="pan-chiuso"><b>Palestra Iron Club</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-sport">Sport e fitness</span>
+          <h3>Iron Club</h3>
+          <p class="sotto">Sala pesi e corsi</p>
+          <p>Abbonamenti a confronto, orario dei corsi e prova gratuita in due tocchi.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="shop" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#1d1526,#4a2f6b 55%,#a07ad6)">
+        <span class="tex" style="background-image:radial-gradient(rgba(255,255,255,.9) 1.1px,transparent 1.1px);background-size:15px 15px"></span>
+        <div class="pan-chiuso"><b>Boutique Vera</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-shop">Negozi locali</span>
+          <h3>Vera</h3>
+          <p class="sotto">Boutique e accessori</p>
+          <p>Vetrina dei capi, novità della settimana e come raggiungere il negozio.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="food" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#231409,#7c3a1c 55%,#c2683a)">
+        <span class="tex" style="background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 1px,transparent 1px 12px)"></span>
+        <div class="pan-chiuso"><b>Trattoria Il Cortile</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-food">Ristorazione</span>
+          <h3>Il Cortile</h3>
+          <p class="sotto">Cucina di casa</p>
+          <p>Piatti del giorno che cambi in un minuto e richiesta tavolo diretta.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="beauty" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#2a1226,#6d2258 55%,#d876ae)">
+        <span class="tex" style="background-image:radial-gradient(rgba(255,255,255,.9) 1.2px,transparent 1.2px);background-size:12px 12px"></span>
+        <div class="pan-chiuso"><b>Nail Studio Lume</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-beauty">Barber e bellezza</span>
+          <h3>Lume</h3>
+          <p class="sotto">Nail e make up studio</p>
+          <p>Galleria dei lavori che carichi tu e pacchetti con prezzi chiari.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="sport" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#04231c,#0d6b4d 55%,#38d38f)">
+        <span class="tex" style="background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.6) 0 1px,transparent 1px 15px),repeating-linear-gradient(90deg,rgba(255,255,255,.6) 0 1px,transparent 1px 15px)"></span>
+        <div class="pan-chiuso"><b>Padel Center Nord</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-sport">Sport e fitness</span>
+          <h3>Center Nord</h3>
+          <p class="sotto">Padel e tennis</p>
+          <p>Disponibilità dei campi, tariffe orarie e prenotazione su WhatsApp.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="shop" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#132018,#2f6b3a 55%,#8fd66a)">
+        <span class="tex" style="background-image:repeating-radial-gradient(circle at 0 100%,rgba(255,255,255,.55) 0 1px,transparent 1px 14px)"></span>
+        <div class="pan-chiuso"><b>Fioraio Le Rose</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-shop">Negozi locali</span>
+          <h3>Le Rose</h3>
+          <p class="sotto">Fiori e composizioni</p>
+          <p>Catalogo per occasione, consegne in zona e ordini per le ricorrenze.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="food" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#141a2c,#2b3f6b 55%,#5f7fd8)">
+        <span class="tex" style="background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:11px 11px"></span>
+        <div class="pan-chiuso"><b>Bar Centrale</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-food">Ristorazione</span>
+          <h3>Centrale</h3>
+          <p class="sotto">Bar e caffetteria</p>
+          <p>Colazioni, aperitivi e orari continuati, con il QR sul bancone.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="beauty" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#10221f,#1f5a4c 55%,#5fc7a6)">
+        <span class="tex" style="background-image:repeating-radial-gradient(circle at 100% 0,rgba(255,255,255,.5) 0 1px,transparent 1px 15px)"></span>
+        <div class="pan-chiuso"><b>Centro estetico Aura</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-beauty">Barber e bellezza</span>
+          <h3>Aura</h3>
+          <p class="sotto">Centro estetico</p>
+          <p>Trattamenti per categoria e richiesta appuntamento in un tocco.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="sport" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#161031,#3c2a80 55%,#9b83f5)">
+        <span class="tex" style="background-image:repeating-radial-gradient(circle at 50% 100%,rgba(255,255,255,.5) 0 1px,transparent 1px 18px)"></span>
+        <div class="pan-chiuso"><b>Yoga Spazio Respiro</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-sport">Sport e fitness</span>
+          <h3>Respiro</h3>
+          <p class="sotto">Yoga e pilates</p>
+          <p>Calendario delle lezioni e prima prova prenotabile online.</p>
+        </div>
+      </div>
+      <div class="pan" data-cat="shop" role="button" tabindex="0" aria-expanded="false"
+        style="background:linear-gradient(140deg,#0a1a24,#155069 55%,#4fc0e8)">
+        <span class="tex" style="background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.6) 0 1px,transparent 1px 11px)"></span>
+        <div class="pan-chiuso"><b>TechFix riparazioni</b></div>
+        <div class="pan-aperto">
+          <span class="tag t-shop">Negozi locali</span>
+          <h3>TechFix</h3>
+          <p class="sotto">Riparazioni e assistenza</p>
+          <p>Servizi con tempi e prezzi indicativi e stato della riparazione.</p>
+        </div>
+      </div>
+    </div>
+  <p class="nota">Proposta di design numero 2 per la sezione Vetrina esempi. Pannelli a fisarmonica orizzontale.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+
+  var pillole = Array.prototype.slice.call(document.querySelectorAll('.pill'));
+  function attivaPillola(p){
+    pillole.forEach(function(o){ o.setAttribute('aria-pressed','false'); });
+    p.setAttribute('aria-pressed','true');
+  }
+
+  var pans = Array.prototype.slice.call(document.querySelectorAll('.pan'));
+  function apri(p){
+    pans.forEach(function(o){ o.setAttribute('aria-expanded','false'); });
+    p.setAttribute('aria-expanded','true');
+  }
+  pans.forEach(function(p){
+    p.addEventListener('click', function(){ apri(p); });
+    p.addEventListener('mouseenter', function(){ if (window.innerWidth > 900) apri(p); });
+    p.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); apri(p); }
+    });
+  });
+  pillole.forEach(function(pill){
+    pill.addEventListener('click', function(){
+      attivaPillola(pill);
+      var f = pill.dataset.filter, primo = null;
+      pans.forEach(function(p){
+        var dentro = (f === 'all' || p.dataset.cat === f);
+        p.hidden = !dentro;
+        if (dentro && !primo) primo = p;
+      });
+      if (primo) apri(primo);
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

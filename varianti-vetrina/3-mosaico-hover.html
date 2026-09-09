@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebOra . Vetrina, mosaico</title>
+<meta name="theme-color" content="#08080b">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:#08080b;color:#e4e4ec;
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  -webkit-font-smoothing:antialiased;letter-spacing:-.011em;overflow-x:hidden}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+h1,h2,h3{margin:0;letter-spacing:-.035em;line-height:1.1}
+p{margin:0}
+.sfondo{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.sfondo::before{content:'';position:absolute;inset:0;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:58px 58px;
+  -webkit-mask-image:radial-gradient(120% 80% at 50% 0%,#000 10%,transparent 72%);
+  mask-image:radial-gradient(120% 80% at 50% 0%,#000 10%,transparent 72%)}
+.alone{position:absolute;border-radius:50%;filter:blur(110px);opacity:.22}
+.a1{width:520px;height:520px;top:-220px;left:-120px;background:#10b981}
+.a2{width:480px;height:480px;top:-160px;right:-140px;background:#3b82f6}
+.wrap{max-width:1180px;margin:0 auto;padding:64px 20px 80px}
+.occhiello{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:800;
+  letter-spacing:.16em;text-transform:uppercase;color:#60a5fa}
+.occhiello::before{content:'';width:24px;height:1px;background:linear-gradient(90deg,transparent,#60a5fa)}
+h2.titolo{margin-top:16px;font-size:clamp(28px,4.4vw,42px);font-weight:900}
+.lede{margin-top:14px;max-width:62ch;font-size:16.5px;line-height:1.6;color:#9a9aa8}
+.pillole{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px}
+.pill{padding:8px 15px;border-radius:10px;font-size:13px;font-weight:700;color:#a1a1ad;
+  border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.035);transition:.25s}
+.pill:hover{color:#e9e9f0;border-color:rgba(255,255,255,.2);transform:translateY(-1px)}
+.pill[aria-pressed="true"]{color:#06120e;border-color:transparent;
+  background:linear-gradient(135deg,#6ee7b7,#10b981);box-shadow:0 8px 24px -10px rgba(16,185,129,.85)}
+.tag{display:inline-block;padding:4px 10px;border-radius:999px;font-size:10px;font-weight:900;
+  letter-spacing:.1em;text-transform:uppercase;border:1px solid;background:rgba(255,255,255,.04)}
+.t-food{color:#fbbf24;border-color:rgba(251,191,36,.45)}
+.t-beauty{color:#c4b5fd;border-color:rgba(167,139,250,.45)}
+.t-sport{color:#6ee7b7;border-color:rgba(52,211,153,.45)}
+.t-shop{color:#93c5fd;border-color:rgba(96,165,250,.45)}
+.nota{margin-top:44px;padding-top:22px;border-top:1px solid rgba(255,255,255,.08);
+  font-size:12.5px;color:#6f6f80}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition-duration:.01ms!important}}
+
+.mosaico{display:grid;gap:14px;margin-top:28px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.cella{position:relative;aspect-ratio:1/1;border-radius:20px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.09);cursor:pointer;
+  transition:transform .4s cubic-bezier(.2,.8,.2,1),border-color .4s,box-shadow .4s}
+.cella[hidden]{display:none}
+.cella:hover,.cella:focus-visible{transform:translateY(-5px);border-color:rgba(52,211,153,.5);
+  box-shadow:0 28px 66px -30px rgba(16,185,129,.65);outline:none}
+.cella span.tex{position:absolute;inset:0;opacity:.18}
+.velo{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,6,10,0) 34%,rgba(6,6,10,.9));
+  transition:background .4s}
+.cella:hover .velo{background:linear-gradient(180deg,rgba(6,6,10,.18) 10%,rgba(6,6,10,.94))}
+.testo{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:16px}
+.testo b{display:block;font-size:17px;font-weight:900;color:#fff;letter-spacing:-.02em}
+.testo em{display:block;margin-top:2px;font-style:normal;font-size:11px;font-weight:600;color:rgba(255,255,255,.72)}
+.testo p{max-height:0;overflow:hidden;opacity:0;font-size:12.5px;line-height:1.45;color:rgba(255,255,255,.82);
+  transition:max-height .45s cubic-bezier(.2,.8,.2,1),opacity .35s,margin-top .45s}
+.cella:hover .testo p,.cella:focus-visible .testo p{max-height:80px;opacity:1;margin-top:9px}
+.etichetta{position:absolute;left:14px;top:14px;z-index:2}
+</style>
+</head>
+<body>
+<div class="sfondo"><span class="alone a1"></span><span class="alone a2"></span></div>
+
+<main class="wrap">
+  <span class="occhiello">Vetrina esempi</span>
+  <h2 class="titolo">Come diventa la tua attività.</h2>
+  <p class="lede">Riquadri quadrati puliti. La descrizione compare al passaggio del mouse, così la pagina resta leggera.</p>
+    <div class="pillole" role="group" aria-label="Filtra gli esempi per categoria">
+      <button type="button" class="pill" aria-pressed="true"  data-filter="all">Tutte</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="food">Ristorazione</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="beauty">Barber e bellezza</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="sport">Sport e fitness</button>
+      <button type="button" class="pill" aria-pressed="false" data-filter="shop">Negozi locali</button>
+    </div>
+
+    <div class="mosaico">
+      <article class="cella" data-cat="food" tabindex="0" style="background:linear-gradient(140deg,#2a1410,#8f2f22 55%,#e0642f)">
+        <span class="tex" style="background-image:radial-gradient(rgba(255,255,255,.9) 1.1px,transparent 1.1px);background-size:13px 13px"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-food">Ristorazione</span></span>
+        <div class="testo">
+          <b>Pizzeria da Nino</b>
+          <em>Pizzeria e forno a legna</em>
+          <p>Menù sempre aggiornato, orari del forno e ordine su WhatsApp in due tocchi.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="beauty" tabindex="0" style="background:linear-gradient(140deg,#101014,#33343d 52%,#8b8f9e)">
+        <span class="tex" style="background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.8) 0 1px,transparent 1px 9px)"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-beauty">Barber e bellezza</span></span>
+        <div class="testo">
+          <b>Barbiere Sala 12</b>
+          <em>Barber shop dal 1998</em>
+          <p>Listino tagli, foto dei lavori e prenotazione rapida dallo smartphone.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="sport" tabindex="0" style="background:linear-gradient(140deg,#1a1206,#6b4408 55%,#f2a72c)">
+        <span class="tex" style="background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.7) 0 1px,transparent 1px 10px)"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-sport">Sport e fitness</span></span>
+        <div class="testo">
+          <b>Palestra Iron Club</b>
+          <em>Sala pesi e corsi</em>
+          <p>Abbonamenti a confronto, orario dei corsi e prova gratuita in due tocchi.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="shop" tabindex="0" style="background:linear-gradient(140deg,#1d1526,#4a2f6b 55%,#a07ad6)">
+        <span class="tex" style="background-image:radial-gradient(rgba(255,255,255,.9) 1.1px,transparent 1.1px);background-size:15px 15px"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-shop">Negozi locali</span></span>
+        <div class="testo">
+          <b>Boutique Vera</b>
+          <em>Boutique e accessori</em>
+          <p>Vetrina dei capi, novità della settimana e come raggiungere il negozio.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="food" tabindex="0" style="background:linear-gradient(140deg,#231409,#7c3a1c 55%,#c2683a)">
+        <span class="tex" style="background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.6) 0 1px,transparent 1px 12px)"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-food">Ristorazione</span></span>
+        <div class="testo">
+          <b>Trattoria Il Cortile</b>
+          <em>Cucina di casa</em>
+          <p>Piatti del giorno che cambi in un minuto e richiesta tavolo diretta.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="beauty" tabindex="0" style="background:linear-gradient(140deg,#2a1226,#6d2258 55%,#d876ae)">
+        <span class="tex" style="background-image:radial-gradient(rgba(255,255,255,.9) 1.2px,transparent 1.2px);background-size:12px 12px"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-beauty">Barber e bellezza</span></span>
+        <div class="testo">
+          <b>Nail Studio Lume</b>
+          <em>Nail e make up studio</em>
+          <p>Galleria dei lavori che carichi tu e pacchetti con prezzi chiari.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="sport" tabindex="0" style="background:linear-gradient(140deg,#04231c,#0d6b4d 55%,#38d38f)">
+        <span class="tex" style="background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.6) 0 1px,transparent 1px 15px),repeating-linear-gradient(90deg,rgba(255,255,255,.6) 0 1px,transparent 1px 15px)"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-sport">Sport e fitness</span></span>
+        <div class="testo">
+          <b>Padel Center Nord</b>
+          <em>Padel e tennis</em>
+          <p>Disponibilità dei campi, tariffe orarie e prenotazione su WhatsApp.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="shop" tabindex="0" style="background:linear-gradient(140deg,#132018,#2f6b3a 55%,#8fd66a)">
+        <span class="tex" style="background-image:repeating-radial-gradient(circle at 0 100%,rgba(255,255,255,.55) 0 1px,transparent 1px 14px)"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-shop">Negozi locali</span></span>
+        <div class="testo">
+          <b>Fioraio Le Rose</b>
+          <em>Fiori e composizioni</em>
+          <p>Catalogo per occasione, consegne in zona e ordini per le ricorrenze.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="food" tabindex="0" style="background:linear-gradient(140deg,#141a2c,#2b3f6b 55%,#5f7fd8)">
+        <span class="tex" style="background-image:radial-gradient(rgba(255,255,255,.85) 1px,transparent 1px);background-size:11px 11px"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-food">Ristorazione</span></span>
+        <div class="testo">
+          <b>Bar Centrale</b>
+          <em>Bar e caffetteria</em>
+          <p>Colazioni, aperitivi e orari continuati, con il QR sul bancone.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="beauty" tabindex="0" style="background:linear-gradient(140deg,#10221f,#1f5a4c 55%,#5fc7a6)">
+        <span class="tex" style="background-image:repeating-radial-gradient(circle at 100% 0,rgba(255,255,255,.5) 0 1px,transparent 1px 15px)"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-beauty">Barber e bellezza</span></span>
+        <div class="testo">
+          <b>Centro estetico Aura</b>
+          <em>Centro estetico</em>
+          <p>Trattamenti per categoria e richiesta appuntamento in un tocco.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="sport" tabindex="0" style="background:linear-gradient(140deg,#161031,#3c2a80 55%,#9b83f5)">
+        <span class="tex" style="background-image:repeating-radial-gradient(circle at 50% 100%,rgba(255,255,255,.5) 0 1px,transparent 1px 18px)"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-sport">Sport e fitness</span></span>
+        <div class="testo">
+          <b>Yoga Spazio Respiro</b>
+          <em>Yoga e pilates</em>
+          <p>Calendario delle lezioni e prima prova prenotabile online.</p>
+        </div>
+      </article>
+      <article class="cella" data-cat="shop" tabindex="0" style="background:linear-gradient(140deg,#0a1a24,#155069 55%,#4fc0e8)">
+        <span class="tex" style="background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.6) 0 1px,transparent 1px 11px)"></span>
+        <span class="velo"></span>
+        <span class="etichetta"><span class="tag t-shop">Negozi locali</span></span>
+        <div class="testo">
+          <b>TechFix riparazioni</b>
+          <em>Riparazioni e assistenza</em>
+          <p>Servizi con tempi e prezzi indicativi e stato della riparazione.</p>
+        </div>
+      </article>
+    </div>
+  <p class="nota">Proposta di design numero 3 per la sezione Vetrina esempi. Mosaico con testo che compare.</p>
+</main>
+
+<script>
+(function(){
+'use strict';
+
+  var pillole = Array.prototype.slice.call(document.querySelectorAll('.pill'));
+  function attivaPillola(p){
+    pillole.forEach(function(o){ o.setAttribute('aria-pressed','false'); });
+    p.setAttribute('aria-pressed','true');
+  }
+
+  var celle = Array.prototype.slice.call(document.querySelectorAll('.cella'));
+  pillole.forEach(function(p){
+    p.addEventListener('click', function(){
+      attivaPillola(p);
+      var f = p.dataset.filter;
+      celle.forEach(function(c){ c.hidden = !(f === 'all' || c.dataset.cat === f); });
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

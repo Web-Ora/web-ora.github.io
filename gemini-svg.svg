@@ -1,0 +1,15 @@
+<div class="flex items-center gap-3 cursor-pointer select-none">
+  <!-- Icona SVG -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" class="w-9 h-9" fill="none">
+    <rect width="64" height="64" rx="14" fill="#10b981" fill-opacity="0.12" stroke="#10b981" stroke-opacity="0.35" stroke-width="1.5"/>
+    <path d="M17 24 L25 43" stroke="#10b981" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M47 24 L39 43" stroke="#10b981" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M25 43 L32 35 L39 43" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <polygon points="32,20 38,26 32,32 26,26" fill="#34d399" stroke="#10b981" stroke-width="1.5" stroke-linejoin="round"/>
+  </svg>
+
+  <!-- Testo WebOra -->
+  <span class="text-xl font-bold tracking-tight text-white">
+    Web<span class="text-emerald-500">Ora</span>
+  </span>
+</div>
