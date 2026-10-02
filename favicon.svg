@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- tassello bianco arrotondato: il marchio resta leggibile sia sulle
+       schede chiare sia su quelle scure del browser -->
+  <rect width="64" height="64" rx="14" fill="#ffffff"/>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="13.25" fill="none" stroke="#10b981" stroke-opacity="0.28" stroke-width="1.5"/>
+  <path d="M17 24 L25 43" stroke="#10b981" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M47 24 L39 43" stroke="#10b981" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M25 43 L32 35 L39 43" stroke="#10b981" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="32,20 38,26 32,32 26,26" fill="#34d399" stroke="#10b981" stroke-width="1.5" stroke-linejoin="round"/>
+</svg>
